@@ -43,7 +43,7 @@ README文档主要用于介绍项目基本情况、安装及使用环境配置�
 
 测试项目使用的IDE是Pycharm，解释器使用Python3.7。所以下面以此为例介绍安装步骤：
 
-1. Clone项目到本地
+1. Clone项目到本地 <https://github.com/psiang/Scene_Classification>
 2. 安装Pycharm <https://www.jetbrains.com/pycharm/>
 3. 安装Python3.7 <https://www.python.org/downloads/>
 4. 使用Pycharm打开项目
@@ -68,7 +68,22 @@ README文档主要用于介绍项目基本情况、安装及使用环境配置�
 
 注意事项：数据中/pond/0002.tif 的大小是190*200，需要注意处理。示例采取了剔除的处理方式。
 
+## 项目使用教程
 
+项目使用教程简要介绍了tensorflow的使用以及其他util的使用。教程将按照以下五个板块介绍：
 
+1. 数据的读取
+2. 数据的预处理
+3. 模型获取
+4. 模型测试
+5. 结果图像生成
+
+具体请参见文档：
+
+## 模型搭建教程
+
+模型搭建教程简要介绍了各类CNN模型及其利用tensorflow搭建方式。
+
+具体请参见文档：
 
 参照教程：<https://www.tensorflow.org/tutorials/images/cnn>
