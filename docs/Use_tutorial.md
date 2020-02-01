@@ -1,6 +1,6 @@
 # 项目使用教程
 
-本教程按照以下五个板块展示如何使用本项目进行场景分类，并提供tensorflow的部分使用方法：
+本教程按照以下五步展示如何使用本项目进行场景分类，并提供tensorflow的部分使用方法：
 
 1. 数据的读取
 2. 数据的预处理
@@ -8,7 +8,7 @@
 4. 模型测试
 5. 结果图像生成
 
-最后将提供两个使用实例提供参考。
+最后将提供两个使用示例代码提供参考。
 
 另外，本教程所有操作均在__main__.py完成。教程只提供项目自己的接口的具体参数介绍，关于tensorflow的接口参数和功能可查看[官网文档](https://www.tensorflow.org/api_docs/python/tf)。而构建CNN模型的部分则转移至另一个[模型搭建教程](https://github.com/psiang/Scene_Classification/blob/master/docs/Model_tutorial.md)。
 
@@ -60,7 +60,7 @@ x, y = read_data.read_SIRI_WHU()
 
 **Return:**
 
-- x：Numpy类型。图像样本数据，有四维，第1维是不同的图像，第2~3维是图像的像素长宽，第4维是图像通道数。**注意学习器的数据必须是0~1之间的实数。**
+- x：Numpy类型。图像样本数据，有四维，第1维是不同的图像，第2至3维是图像的像素长宽，第4维是图像通道数。**注意学习器的数据必须是0~1之间的实数。**
 - y：Numpy类型。样本的标签，返回的是编号过的标签。**注意学习器的标签必须是数字，此处若自己写接口必须将标签转换成int类型。**
 
 TIPS：本项目只提供了对样例数据SIRI_WHU的读入接口，如果需要对其他数据进行读取则按照类似[规范代码](https://github.com/psiang/Scene_Classification/blob/master/rsidea/preprocess/read_data.py)补充接口即可。
@@ -122,7 +122,7 @@ x_train, y_train, x_test, y_test = split_data.split(data, label)
 
 构造模型可以参考另一篇[模型搭建教程](https://github.com/psiang/Scene_Classification/blob/master/docs/Model_tutorial.md)，调用构造的接口可以获得一个Model类型的未训练模型。
 
-#### 方式一：构造模型并训练
+#### 方式一:构造模型并训练
 
 当没有预训练时只能采取这种方法得到训练模型。主要有三步：
 
@@ -146,7 +146,7 @@ history = model.fit(x_train, y_train, epochs=10,
 history = history.history
 ```
 
-#### 方式二：构造模型加载预训练权值
+#### 方式二:构造模型加载预训练权值
 
 当预训练并保存了图的权值时可以使用这个方法。主要有三步：
 
@@ -167,9 +167,9 @@ model.compile(optimizer='adam',
 model.load_weights(".\\model_data\\weight\\lenet_SIRI_WHU.h5")
 ```
 
-#### 方式三：载预训练模型
+#### 方式三:载预训练模型
 
-当预训练并保存了模型时可以使用这个方法。直接调用接口加载即可，注意调用的是模块函数而不是实例的函数。
+当预训练并保存了模型时可以使用这个方法。直接调用接口加载即可，注意调用的是models模块函数而不是实例的函数。
 
 ```python
 # 加载模型
@@ -178,13 +178,13 @@ model = models.load_model(".\\model_data\\model\\lenet_SIRI_WHU.h5")
 
 ### 保存模型
 
-可以用两种方式保存模型，要么把整个模型直接保存下来，然后用[方法三](#方式三：载预训练模型)加载模型；要么只保存模型的权值，然后用[方法二](#方式二：构造模型加载预训练权值)加载模型。
+可以用两种方式保存模型，要么把整个模型直接保存下来，然后用[方法三](#方式三:载预训练模型)加载模型；要么只保存模型的权值，然后用[方法二](#方式二:构造模型加载预训练权值)加载模型。
 
 保存模型请用.**h5**的形式
 
 #### 保存整个模型
 
-把整个模型直接保存下来，可用[方法三](#方式三：载预训练模型)加载模型。这样做的好处是加载简单方便且可方便移植。
+把整个模型直接保存下来，可用[方法三](#方式三:载预训练模型)加载模型。这样做的好处是加载简单方便且可方便移植。
 
 ```python
 # 保存模型
@@ -193,7 +193,7 @@ model.save(".\\model_data\\model\\lenet_SIRI_WHU.h5")
 
 #### 仅保存模型权值
 
-只保存模型的权值，可用[方法二](#方式二：构造模型加载预训练权值)加载模型。这样做的好处是比保存整个模型所需空间更小。
+只保存模型的权值，可用[方法二](#方式二:构造模型加载预训练权值)加载模型。这样做的好处是比保存整个模型所需空间更小。
 
 ```python
 # 保存模型权值
@@ -202,7 +202,7 @@ model.save_weights(".\\model_data\\weight\\lenet_SIRI_WHU.h5")
 
 ### 训练历史的存取
 
-在获取模型的[方法一](#方式一：构造模型并训练)中训练数据可以返回一个训练历史数据，历史数据与配置模型时metrics参数有关。这个历史数据用于可以[生成图像](结果图像生成)进行分析，所以我们利用json把它保存下来。
+在获取模型的[方法一](#方式一:构造模型并训练)中训练数据可以返回一个训练历史数据，历史数据与配置模型时metrics参数有关。这个历史数据用于可以[生成图像](#结果图像生成)进行分析，所以我们利用json把它保存下来。
 
 TIPS：model.fit返回值的是一个History类型的实例，我们所需要的历史数据在History.history中，它是一个字典类型数据。
 
@@ -269,6 +269,7 @@ draw_loss(history)
 - history：字典类型。训练历史数据。
 
 图例：
+
 ![损失折线图](https://github.com/psiang/Scene_Classification/blob/master/results/loss/lenet_SIRI_WHU.png)
 
 ### 准确度折线图
@@ -285,6 +286,7 @@ draw_accuracy(history)
 - history：字典类型。训练历史数据。
 
 图例：
+
 ![准确度折线图](https://github.com/psiang/Scene_Classification/blob/master/results/accuracy/lenet_SIRI_WHU.png)
 
 ### 单张预测展示图
@@ -314,6 +316,7 @@ draw_predict_demo(model, x, label_name)
 - label_name：Numpy类型。对应的标签名称列表。
   
 图例：
+
 ![单张预测展示图](https://github.com/psiang/Scene_Classification/blob/master/results/prediction/lenet_SIRI_WHU.png)
 
 ## 示例代码
@@ -339,7 +342,7 @@ model = AlexNet(input_shape=x_train[0].shape, output_shape=12)
 model.compile(optimizer='adam',
               loss='sparse_categorical_crossentropy',
               metrics=['accuracy'])
-# 填入数据进行训练并保存模型
+# 填入数据进行训练
 history = model.fit(x_train, y_train, epochs=10,
                     validation_data=(x_test, y_test))
 history = history.history
