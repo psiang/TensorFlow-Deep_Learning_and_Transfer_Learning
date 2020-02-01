@@ -1,13 +1,11 @@
 # Scene_Classification
 
-本项目README文档
-
 本项目是为了便于学习场景分类而创建的。本项目中，大家可以学习使用tensorflow2.0搭建CNN模型的方式，同时自己动手进行训练。如果觉得训练需要花费较多时间，也可以使用本项目预训练的模型直接进行测验。
 
-项目主要内容有:
+项目主要教程内容有:
 
-1. 项目的使用教程。
-2. 不同CNN模型的搭建。
+1. [项目的使用教程](https://github.com/psiang/Scene_Classification/blob/master/docs/Use_tutorial.md)
+2. [各种CNN模型的搭建](https://github.com/psiang/Scene_Classification/blob/master/docs/Model_tutorial.md)
 
 README文档主要用于介绍项目基本情况、安装及使用环境配置并为其他教程提供索引。
 
@@ -74,16 +72,14 @@ README文档主要用于介绍项目基本情况、安装及使用环境配置�
 
 1. 数据的读取
 2. 数据的预处理
-3. 模型获取
+3. 模型获取和保存
 4. 模型测试
 5. 结果图像生成
 
-具体请参见文档：
+具体请参见文档：<https://github.com/psiang/Scene_Classification/blob/master/docs/Use_tutorial.md>
 
 ## 模型搭建教程
 
 模型搭建教程简要介绍了各类CNN模型及其利用tensorflow搭建方式。
 
-具体请参见文档：
-
-参照教程：<https://www.tensorflow.org/tutorials/images/cnn>
+具体请参见文档：<https://github.com/psiang/Scene_Classification/blob/master/docs/Model_tutorial.md>

@@ -1,8 +1,10 @@
 import os
 import tensorflow as tf
-from tensorflow.keras import layers, models
 from rsidea.util.history import *
 from rsidea.util.draw import *
+from tensorflow.keras import layers, models
+import matplotlib.image as mpimg
+from rsidea.preprocess import read_data, read_label, split_data
 
 
 # LeNet建模

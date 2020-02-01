@@ -4,8 +4,7 @@ import numpy as np
 
 
 # 读取SIRI_WHU的数据
-def read_SIRI_WHU():
-    data_dir = '.\\data\\Google dataset of SIRI-WHU_earth_im_tiff\\12class_tif'
+def read_SIRI_WHU(data_dir='.\\data\\Google dataset of SIRI-WHU_earth_im_tiff\\12class_tif'):
     datas = []
     labels = []
     label_count = 0  # 产生标签编号

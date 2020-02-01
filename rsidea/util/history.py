@@ -4,7 +4,7 @@ import codecs
 
 
 # 保存历史信息为json文件
-def save_history(path, history):
+def save_history(history, path):
     new_hist = {}
     for key in list(history.keys()):
         if type(history[key]) == np.ndarray:
