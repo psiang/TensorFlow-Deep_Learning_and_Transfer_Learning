@@ -121,7 +121,6 @@ venv.bak/
 /model_data/model
 /model_data/weight
 !/model_data/history/lenet_SIRI_WHU.json
-!/model_data/model/lenet_SIRI_WHU.h5
 !/model_data/weight/lenet_SIRI_WHU.h5
 
 # mypy
