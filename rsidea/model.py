@@ -11,14 +11,18 @@ from rsidea.preprocess import read_data, read_label, split_data
 def LeNet(input_shape, output_shape):
     # 设置模型各层（卷积-池化-卷积-池化-全连接）
     model = models.Sequential()
+    # 第一层（卷积加池化）
     model.add(layers.Conv2D(32, (5, 5), strides=(1, 1), input_shape=input_shape, padding='valid', activation='relu',
                             kernel_initializer='uniform'))
     model.add(layers.MaxPooling2D(pool_size=(2, 2)))
+    # 第二层（卷积加池化）
     model.add(layers.Conv2D(64, (5, 5), strides=(1, 1), padding='valid', activation='relu',
                             kernel_initializer='uniform'))
     model.add(layers.MaxPooling2D(pool_size=(2, 2)))
+    # 第三层（全连接）
     model.add(layers.Flatten())
     model.add(layers.Dense(100, activation='relu'))
+    # 第四层（全连接输出）
     model.add(layers.Dense(output_shape, activation='softmax'))
     return model
 

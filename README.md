@@ -80,6 +80,6 @@ README文档主要用于介绍项目基本情况、安装及使用环境配置�
 
 ## 模型搭建教程
 
-模型搭建教程简要介绍了各类CNN模型及其利用tensorflow搭建方式。
+模型搭建教程简要介绍了各类CNN模型及其利用tensorflow2.0搭建方式。
 
 具体请参见文档：<https://github.com/psiang/Scene_Classification/blob/master/docs/Model_tutorial.md>
