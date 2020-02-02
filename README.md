@@ -39,7 +39,7 @@ README文档主要用于介绍项目基本情况、安装及使用环境配置�
 
 ## 安装及环境配置
 
-测试项目使用的IDE是Pycharm，解释器使用Python3.7。所以下面以此为例介绍安装步骤：
+测试项目使用的IDE是Pycharm，解释器使用Python3.7，测试系统为Windows 10。所以下面以此为例介绍安装步骤：
 
 1. Clone项目到本地 <https://github.com/psiang/Scene_Classification>
 2. 安装Pycharm <https://www.jetbrains.com/pycharm/>

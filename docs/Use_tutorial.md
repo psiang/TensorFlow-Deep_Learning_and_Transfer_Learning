@@ -118,7 +118,7 @@ x_train, y_train, x_test, y_test = split_data.split(data, label)
 
 - 构造模型并训练
 - 构造模型加载预训练权值
-- 载预训练模型
+- 直接加载预训练模型
 
 构造模型可以参考另一篇[模型搭建教程](https://github.com/psiang/Scene_Classification/blob/master/docs/Model_tutorial.md)，调用构造的接口可以获得一个Model类型的未训练模型。
 
@@ -178,7 +178,7 @@ model = models.load_model(".\\model_data\\model\\lenet_SIRI_WHU.h5")
 
 ### 保存模型
 
-可以用两种方式保存模型，要么把整个模型直接保存下来，然后用[方式三](#方式三载预训练模型)加载模型；要么只保存模型的权值，然后用[方式二](#方式二构造模型加载预训练权值)加载模型。
+可以用两种方式保存模型，要么把整个模型直接保存下来，然后用[方式三](#方式三加载预训练模型)加载模型；要么只保存模型的权值，然后用[方式二](#方式二构造模型加载预训练权值)加载模型。
 
 保存模型请用.**h5**的形式
 
