@@ -10,6 +10,8 @@ TensorFlow2.0中已经内置了keras，keras可以方便地将模型构建出来
 
 - [LeNet](#LeNet)
 - [AlexNet](#AlexNet)
+- [VGG16](#VGG16)
+- [GoogLeNet](#GoogLeNet)
 
 ## LeNet
 
@@ -17,7 +19,7 @@ TensorFlow2.0中已经内置了keras，keras可以方便地将模型构建出来
 
 ### LeNet模型介绍
 
-LeNet来自论文Gradient-Based Learning Applied to Document Recognition。如上图所示，它的结构比较简单：
+LeNet来自论文[Gradient-Based Learning Applied to Document Recognition](http://www.dengfanxin.cn/wp-content/uploads/2016/03/1998Lecun.pdf)。如上图所示，它的结构比较简单：
 
 卷积1 - 池化1 - 卷积2 - 池化2 - 全连接1（卷积） - 全连接2 - 输出层
 
@@ -25,7 +27,7 @@ LeNet来自论文Gradient-Based Learning Applied to Document Recognition。如�
 
 ### LeNet模型实现
 
-在这里，池化我们采用MaxPooling，同时激活函数使用Relu，输出层采用softmax，并简化全连接层为一层，由此可以构建以下模型和代码：
+在这里，池化我们采用MaxPool，同时激活函数使用Relu，输出层采用Softmax，并简化全连接层为一层，由此可以构建以下模型和代码：
 
 卷积1 - 池化1 - 卷积2 - 池化2 - 全连接2 - softmax输出层
 
@@ -58,13 +60,13 @@ def LeNet(input_shape, output_shape):
 
 ### AlexNet模型介绍
 
-AlexNet来自论文ImageNet Classification with Deep Convolutional Neural Networks。如上图所示，大致上它分了八层，但是它分成了**两个GPU**来构建，这两个部分是并行运行的，最后在输出层汇总：
+AlexNet来自论文[ImageNet Classification with Deep Convolutional Neural Networks](http://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf)。如上图所示，大致上它分了八层，但是它分成了**两个GPU**来构建，这两个部分是并行运行的，最后在输出层汇总：
 
 卷积1 - 池化1 - 卷积2 - 池化2 - 卷积3 - 卷积4 - 卷积5 - 全连接1 - 全连接2 - 输出层
 
 其中**从“卷积1”到“全连接2”都是分成两个GPU分别运行的**，除了“卷积3”和两次全连接处理数据都只和**同一个GPU**的前一层核映射相连接。
 
-由于该模型在全连接时形成的参数过多，所以论文中使用**Dropout方法隐去一些节点减少计算量**，隐去比例论文给的是0.5。在论文中池化采用MaxPooling，同时激活函数使用Relu，输出层采用softmax。具体核大小和步长可以参见论文3.5节。
+由于该模型在全连接时形成的参数过多，所以论文中使用**Dropout方法隐去一些节点减少计算量**，隐去比例论文给的是0.5。在论文中池化采用MaxPool，同时激活函数使用Relu，输出层采用Softmax。具体核大小和步长可以参见论文3.5节。
 
 ### AlexNet模型实现
 
@@ -107,11 +109,11 @@ def AlexNet(input_shape, output_shape):
 
 ### VGG16模型介绍
 
-VGG16来自论文Very Deep Convolutional Networks for Large Scale Image Recognition。论文阐述了6种VGG模型，VGG16是其中一种16层（没把池化算上）的VGG模型。如上图所示，它的结构也很简单：
+VGG16来自论文[Very Deep Convolutional Networks for Large Scale Image Recognition](https://arxiv.org/pdf/1409.1556.pdf%20http://arxiv.org/abs/1409.1556)。论文阐述了6种VGG模型，VGG16是其中一种16层（没把池化算上）的VGG模型。如上图所示，它的结构也很简单：
 
 卷积1 - 卷积2 - 池化1 - 卷积3 - 卷积4 - 池化2 - 卷积5 - 卷积6 - 卷积7 - 池化3 - 卷积8 - 卷积9 - 卷积10 - 池化4 - 卷积11 - 卷积12 - 卷积13 - 池化5 - 全连接1 - 全连接2 - 输出层
 
-输出层为softmax，池化采用maxpooling，激活函数采用Relu。
+输出层为Softmax，池化采用MaxPool，激活函数采用Relu。
 
 ### VGG16模型实现
 
@@ -175,4 +177,108 @@ def VGG16(input_shape, output_shape):
     # 搭建模型
     model_vgg = Model(inputs=model.input, outputs=tensor, name='vgg16')
     return model_vgg
+```
+
+## GoogLeNet
+
+![GoogLeNet](https://github.com/psiang/Scene_Classification/blob/master/docs/pics/GoogLeNet.png)
+
+### GoogLeNet模型介绍
+
+GoogLeNet，最早版本来自[Going deeper with convolutions](https://www.cv-foundation.org/openaccess/content_cvpr_2015/papers/Szegedy_Going_Deeper_With_2015_CVPR_paper.pdf)。这个模型在上图乍一看流程挺复杂，但是它其实是由**多个相似结构**组成，相似结构如下图所示：
+
+![Inception](https://github.com/psiang/Scene_Classification/blob/master/docs/pics/Inception.png)
+
+这个相似结构被称作**Inception**。这样一来就可以将GoogLetNet的结构简洁地表示成：
+
+卷积1 - 池化1 - LRN1 - 卷积2 - 卷积3 - LRN2 - 池化2 - Inception1 - Inception2 - 池化3 - Inception3 - Inception4 - Inception5 - Inception6 - Inception7 - 池化4 - Inception8 - Inception9 - 池化5 - 全连接 - 输出层
+
+其中**除了“池化5”为AveragePool**外，其他池化均为MaxPool。输出层为Softmax，激活函数采用Relu。
+
+上面介绍的为最早的GoogLeNet，又称为Inception v1。后面又对Inception的结构进行了优化，出现了Inception v2、v3、v4等不同版本。
+
+### GoogLeNet模型实现
+
+项目的具体实现给每个卷积都加了一个Batch Normalization层，并为Inception封装了一个接口，下面作具体阐述。
+
+#### Batch Normalization实现
+
+从AlexNet开始就介绍了一种对数据归一化的优化方式LRN *(Local Response Normalization)* ，但是效果似乎没有BN *(Batch Normalization)* 好，所以**项目实现时采用BN而不再使用LRN**。
+
+BN出现自论文[Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift](https://arxiv.org/pdf/1502.03167.pdf%20http://arxiv.org/abs/1502.03167)，论文详细阐述了为什么要归一化以及归一化的作用，此处不作讨论。
+
+BN在应用时应该放在**每个卷积Conv之后**，激活函数Relu之前（也有些资料认为应放在激活函数之后），带BN层的卷积实现如下：
+
+```python
+# 带BN层的卷积
+def __Conv2d_BN(x, nb_filter, kernel_size, padding='same', strides=(1, 1), name=None):
+    # 卷积
+    x = Conv2D(nb_filter, kernel_size, padding=padding, strides=strides)(x)
+    # 归一化
+    x = BatchNormalization(axis=3)(x)
+    # 激活函数
+    x = Activation('relu')(x)
+    return x
+```
+
+#### Inception实现
+
+按照Inception的构造实现即可，与最初的Inception相比对每个卷积都增加了BN层，代码如下：
+
+```python
+# Inception v1
+def __Inception_v1(x, nb_filter):
+    # 分支1
+    branch1x1 = __Conv2d_BN(x, nb_filter, (1, 1), padding='same', strides=(1, 1), name=None)
+    # 分支2
+    branch3x3 = __Conv2d_BN(x, nb_filter, (1, 1), padding='same', strides=(1, 1), name=None)
+    branch3x3 = __Conv2d_BN(branch3x3, nb_filter, (3, 3), padding='same', strides=(1, 1), name=None)
+    # 分支3
+    branch5x5 = __Conv2d_BN(x, nb_filter, (1, 1), padding='same', strides=(1, 1), name=None)
+    branch5x5 = __Conv2d_BN(branch5x5, nb_filter, (5, 5), padding='same', strides=(1, 1), name=None)
+    # 分支4
+    branchpool = MaxPooling2D(pool_size=(3, 3), strides=(1, 1), padding='same')(x)
+    branchpool = __Conv2d_BN(branchpool, nb_filter, (1, 1), padding='same', strides=(1, 1), name=None)
+    # 合并分支
+    x = concatenate([branch1x1, branch3x3, branch5x5, branchpool], axis=3)
+    return x
+```
+
+#### 最终GoogLeNet的实现
+
+按照GoogLeNet的结构实现即可。
+
+```python
+# GoogLeNet
+def GoogLeNet(input_shape, output_shape):
+    # 输入层
+    inpt = Input(shape=input_shape)
+    # 卷积1 - 池化1
+    x = __Conv2d_BN(inpt, 64, (7, 7), strides=(2, 2), padding='same')
+    x = MaxPooling2D(pool_size=(3, 3), strides=(2, 2), padding='same')(x)
+    # 卷积2 - 卷积3 - 池化2
+    x = __Conv2d_BN(x, 192, (1, 1), strides=(1, 1), padding='same')
+    x = __Conv2d_BN(x, 192, (3, 3), strides=(1, 1), padding='same')
+    x = MaxPooling2D(pool_size=(3, 3), strides=(2, 2), padding='same')(x)
+    # Inception1 - Inception2 - 池化3
+    x = __Inception_v1(x, 64)  # 256
+    x = __Inception_v1(x, 120)  # 480
+    x = MaxPooling2D(pool_size=(3, 3), strides=(2, 2), padding='same')(x)
+    # Inception3 - Inception4 - Inception5 - Inception6 - Inception7 - 池化4
+    x = __Inception_v1(x, 128)  # 512
+    x = __Inception_v1(x, 128)
+    x = __Inception_v1(x, 128)
+    x = __Inception_v1(x, 132)  # 528
+    x = __Inception_v1(x, 208)  # 832
+    x = MaxPooling2D(pool_size=(3, 3), strides=(2, 2), padding='same')(x)
+    # Inception8 - Inception9 - 池化5
+    x = __Inception_v1(x, 208)
+    x = __Inception_v1(x, 256)  # 1024
+    x = AveragePooling2D(pool_size=(7, 7), strides=(7, 7), padding='same')(x)
+    # 全连接 - 输出层
+    x = Dropout(0.4)(x)
+    x = Dense(1000, activation='relu')(x)
+    x = Dense(output_shape, activation='softmax')(x)
+    model = Model(inpt, x, name='googlenet')
+    return model
 ```
