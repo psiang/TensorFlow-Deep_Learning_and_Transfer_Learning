@@ -1,6 +1,8 @@
 # 项目使用教程
 
-本教程按照以下五步展示如何使用本项目进行场景分类，并提供tensorflow的部分使用方法：
+本教程只提供了简单的TensorFlow使用教程，官网上有很详细的[具体教程](https://www.tensorflow.org/tutorials)。
+
+本教程按照以下五步展示如何使用本项目进行场景分类，并提供TensorFlow2.0的部分使用方法：
 
 1. 数据的读取
 2. 数据的预处理
@@ -10,13 +12,13 @@
 
 最后将提供两个使用示例代码提供参考。
 
-另外，本教程所有操作均在__main__.py完成。教程只提供项目自己的接口的具体参数介绍，关于tensorflow的接口参数和功能可查看[官网文档](https://www.tensorflow.org/api_docs/python/tf)。而构建CNN模型的部分则转移至另一个[模型搭建教程](https://github.com/psiang/Scene_Classification/blob/master/docs/Model_tutorial.md)。
+另外，本教程所有操作均在__main__.py完成。教程只提供项目自己的接口的具体参数介绍，关于TensorFlow的接口参数和功能可查看[官网文档](https://www.tensorflow.org/api_docs/python/tf)。而构建CNN模型的部分则转移至另一个[模型搭建教程](https://github.com/psiang/Scene_Classification/blob/master/docs/Model_tutorial.md)。
 
-参考文献：[tensorflow官网CNN教程](https://www.tensorflow.org/tutorials/images/cnn)。
+参考文献：[TensorFlow官网CNN教程](https://www.tensorflow.org/tutorials/images/cnn)。
 
 ## 目录
 
-- [引入模块](#引入模块)
+- [导入依赖](#导入依赖)
 - [数据的读取](#数据的读取)
   - [样本数据读取](#样本数据读取)
   - [标签名称获取](#标签名称获取)
@@ -37,12 +39,14 @@
   - [训练模型示例](#训练模型示例)
   - [加载模型示例](#加载模型示例)
 
-## 引入模块
-
-只需要引入rsidea.model即可，其他的模块都已经在这个模块下引入。
+## 导入依赖
 
 ```python
+import matplotlib.image as mpimg
 from rsidea.model import *
+from rsidea.util.history import *
+from rsidea.util.draw import *
+from rsidea.preprocess import read_data, read_label, split_data
 ```
 
 ## 数据的读取
@@ -110,7 +114,7 @@ x_train, y_train, x_test, y_test = split_data.split(data, label)
 
 这一小节专注于效果实现，models相关的接口请参考[官方文档](https://www.tensorflow.org/api_docs/python/tf/keras/Model)。
 
-一个tensorflow的models分为**模型构成的图**和**图上的权值**两个部分。一个构造模型在未训练的时候上面是没有权值的，只有图本身；而模型训练以后图上就有相应的权值了。模型和权值可以**分别存取**。
+一个TensorFlow的models分为**模型构成的图**和**图上的权值**两个部分。一个构造模型在未训练的时候上面是没有权值的，只有图本身；而模型训练以后图上就有相应的权值了。模型和权值可以**分别存取**。
 
 ### 获取模型
 
@@ -169,11 +173,11 @@ model.load_weights(".\\model_data\\weight\\lenet_SIRI_WHU.h5")
 
 #### 方式三:加载预训练模型
 
-当预训练并保存了模型时可以使用这个方法。直接调用接口加载即可，注意调用的是models模块函数而不是实例的函数。
+当预训练并保存了模型时可以使用这个方法。直接调用接口加载即可，注意load_model在库tensorflow.keras.models中。
 
 ```python
 # 加载模型
-model = models.load_model(".\\model_data\\model\\lenet_SIRI_WHU.h5")
+model = load_model(".\\model_data\\model\\lenet_SIRI_WHU.h5")
 ```
 
 ### 保存模型
@@ -367,7 +371,7 @@ from rsidea.model import *
 
 """LeNet demo"""
 # 加载模型
-model = models.load_model(".\\model_data\\model\\lenet_SIRI_WHU.h5")
+model = load_model(".\\model_data\\model\\lenet_SIRI_WHU.h5")
 # 获取标签
 label_name = read_label.read_SIRI_WHU()
 # 读取demo图像数据

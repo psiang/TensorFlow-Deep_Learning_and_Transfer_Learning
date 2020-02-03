@@ -31,7 +31,10 @@ def draw_predict_demo(model, x, label_name):
     plt.grid(False)
     # 为每个条形图添加数值标签
     for a, b in zip(y[max_pos], plt_pos):
-        plt.text(0.15, b, '%.2f%%' % (a * 100), ha='center', va='center', fontsize=11)
+        if a < max(y[max_pos]) / 6.0:
+            plt.text(a + max(y[max_pos]) / 6.0, b, '%.2f%%' % (a * 100), ha='center', va='center', fontsize=11)
+        else:
+            plt.text(a / 2, b, '%.2f%%' % (a * 100), ha='center', va='center', fontsize=11)
     # 删除边框
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)

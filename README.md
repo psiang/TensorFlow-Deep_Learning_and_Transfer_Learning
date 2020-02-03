@@ -1,11 +1,13 @@
 # Scene_Classification
 
-本项目是为了便于学习场景分类而创建的。本项目中，大家可以学习使用tensorflow2.0搭建CNN模型的方式，同时自己动手进行训练。如果觉得训练需要花费较多时间，也可以使用本项目预训练的模型直接进行测验。
+本项目是为了便于学习场景分类而创建的。本项目中，大家可以学习使用TensorFlow2.0搭建CNN模型，同时自己动手进行训练。如果觉得训练需要花费较多时间，也可以使用本项目预训练的模型直接进行测验。
 
 项目主要教程内容有:
 
 1. [项目的使用教程](https://github.com/psiang/Scene_Classification/blob/master/docs/Use_tutorial.md)
 2. [各种CNN模型的搭建](https://github.com/psiang/Scene_Classification/blob/master/docs/Model_tutorial.md)
+
+TensorFlow的详细文档可以访问官方网站<https://www.tensorflow.org/>。
 
 README文档主要用于介绍项目基本情况、安装及使用环境配置并为其他教程提供索引。
 
@@ -52,9 +54,9 @@ README文档主要用于介绍项目基本情况、安装及使用环境配置�
 
 注意事项：
 
-1. 请务必**安装tensorflow2.0以上**的版本，测试时使用的2.0.1
-2. 请务必**不要使用Python3.8**，tensorflow只支持3.5~3.7
-3. 可以使用其他支持tensorflow的解释器
+1. 请务必**安装TensorFlow2.0以上**的版本，测试时使用的2.0.1
+2. 请务必**不要使用Python3.8**，TensorFlow只支持3.5~3.7
+3. 可以使用其他支持TensorFlow的解释器
 
 ## 数据来源
 
@@ -68,7 +70,7 @@ README文档主要用于介绍项目基本情况、安装及使用环境配置�
 
 ## 项目使用教程
 
-项目使用教程简要介绍了tensorflow的使用以及其他util的使用。教程将按照以下五个板块介绍：
+项目使用教程简要介绍了TensorFlow的使用以及其他util的使用。教程将按照以下五个板块介绍：
 
 1. 数据的读取
 2. 数据的预处理
@@ -80,6 +82,6 @@ README文档主要用于介绍项目基本情况、安装及使用环境配置�
 
 ## 模型搭建教程
 
-模型搭建教程简要介绍了各类CNN模型及其利用tensorflow2.0搭建方式。
+模型搭建教程简要介绍了各类CNN模型及其利用TensorFlow2.0搭建方式。
 
 具体请参见文档：<https://github.com/psiang/Scene_Classification/blob/master/docs/Model_tutorial.md>
