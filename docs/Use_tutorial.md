@@ -43,10 +43,11 @@
 
 ```python
 import matplotlib.image as mpimg
-from rsidea.model import *
-from rsidea.util.history import *
-from rsidea.util.draw import *
+
+from rsidea.models import *
 from rsidea.preprocess import read_data, read_label, split_data
+from rsidea.util.draw import *
+from rsidea.util.history import *
 ```
 
 ## 数据的读取
@@ -138,7 +139,7 @@ x_train, y_train, x_test, y_test = split_data.split(data, label)
 
 ```python
 # 获取未训练模型
-model = LeNet(input_shape=x_train[0].shape, output_shape=12)
+model = lenet.LeNet(input_shape=x_train[0].shape, output_shape=12)
 # 配置模型
 model.compile(optimizer='adam',
               loss='sparse_categorical_crossentropy',
@@ -162,7 +163,7 @@ history = history.history
 
 ```python
 # 获取未训练模型
-model = LeNet(input_shape=x_train[0].shape, output_shape=12)
+model = lenet.LeNet(input_shape=x_train[0].shape, output_shape=12)
 # 配置模型
 model.compile(optimizer='adam',
               loss='sparse_categorical_crossentropy',
@@ -330,7 +331,12 @@ draw_predict_demo(model, x, label_name)
 以AlexNet为例的训练示例代码。
 
 ```python
-from rsidea.model import *
+import matplotlib.image as mpimg
+
+from rsidea.models import *
+from rsidea.preprocess import read_data, read_label, split_data
+from rsidea.util.draw import *
+from rsidea.util.history import *
 
 # 用于控制是否保存模型
 save = False
@@ -341,7 +347,7 @@ x, y = read_data.read_SIRI_WHU()
 # 分割数据
 x_train, y_train, x_test, y_test = split_data.split(x, y)
 # 获取未训练模型
-model = AlexNet(input_shape=x_train[0].shape, output_shape=12)
+model = alexnet.AlexNet(input_shape=x_train[0].shape, output_shape=12)
 # 配置模型
 model.compile(optimizer='adam',
               loss='sparse_categorical_crossentropy',
@@ -367,7 +373,12 @@ draw_accuracy(history)
 以LeNet为例的加载模型示例代码。
 
 ```python
-from rsidea.model import *
+import matplotlib.image as mpimg
+
+from rsidea.models import *
+from rsidea.preprocess import read_data, read_label, split_data
+from rsidea.util.draw import *
+from rsidea.util.history import *
 
 """LeNet demo"""
 # 加载模型

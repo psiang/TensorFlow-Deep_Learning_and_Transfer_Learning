@@ -1,20 +1,20 @@
-from rsidea.model import *
-import os
-import tensorflow as tf
-from rsidea.util.history import *
-from rsidea.util.draw import *
 import matplotlib.image as mpimg
-from rsidea.preprocess import read_data, read_label, split_data
 
-save = True
+from rsidea.models import *
+from rsidea.preprocess import read_data, read_label, split_data
+from rsidea.util.draw import *
+from rsidea.util.history import *
+
+save = False
 
 """googlenet demo"""
 # 读取数据
 x, y = read_data.read_SIRI_WHU()
 # 分割数据
+
 x_train, y_train, x_test, y_test = split_data.split(x, y)
 # 获取未训练模型
-model = GoogLeNet(input_shape=x_train[0].shape, output_shape=12)
+model = resnet34.ResNet34(input_shape=x_train[0].shape, output_shape=12)
 # 配置模型
 model.compile(optimizer='adam',
               loss='sparse_categorical_crossentropy',
@@ -25,12 +25,12 @@ history = model.fit(x_train, y_train, epochs=5,
 history = history.history
 # 模型保存
 if save:
-    model.save(".\\model_data\\model\\googlenet_SIRI_WHU.h5")
+    model.save(".\\model_data\\models\\googlenet_SIRI_WHU.h5")
     model.save_weights(".\\model_data\\weight\\googlenet_SIRI_WHU.h5")
     save_history(history, ".\\model_data\\history\\googlenet_SIRI_WHU.json")
     print("Saved!")
 # # 模型评测
-# model.evaluate(x_test, y_test, verbose=2)
+# models.evaluate(x_test, y_test, verbose=2)
 # 画图
 draw_accuracy(history)
 draw_loss(history)
