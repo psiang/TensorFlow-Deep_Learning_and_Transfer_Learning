@@ -22,7 +22,9 @@ TensorFlow2.0中已经内置了keras，keras可以方便地将模型构建出来
 
 LeNet来自论文[Gradient-Based Learning Applied to Document Recognition](http://www.dengfanxin.cn/wp-content/uploads/2016/03/1998Lecun.pdf)。如上图所示，它的结构比较简单：
 
-卷积1 - 池化1 - 卷积2 - 池化2 - 全连接1（卷积） - 全连接2 - 输出层
+卷积1 - 池化1 -  
+卷积2 - 池化2 -  
+全连接1（卷积） - 全连接2 - 输出层
 
 论文中使用的是tanh激活函数，输出层论文采用的是Guassian Connection。另外根据论文**全连接1应该做卷积操作Conv而不是传统意义上的全连接Dense**。
 
@@ -30,7 +32,9 @@ LeNet来自论文[Gradient-Based Learning Applied to Document Recognition](http:
 
 在这里，池化我们采用MaxPool，同时激活函数使用Relu，输出层采用Softmax，并简化全连接层为一层，由此可以构建以下模型和代码：
 
-卷积1 - 池化1 - 卷积2 - 池化2 - 全连接2 - softmax输出层
+**卷积1 - 池化1 -  
+卷积2 - 池化2 -  
+全连接2 - softmax输出层**
 
 TIPS：如果需要复现LeNet5，只需添加一层全连接1即可。
 
@@ -63,7 +67,10 @@ def LeNet(input_shape, output_shape):
 
 AlexNet来自论文[ImageNet Classification with Deep Convolutional Neural Networks](http://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf)。如上图所示，大致上它分了八层，但是它分成了**两个GPU**来构建，这两个部分是并行运行的，最后在输出层汇总：
 
-卷积1 - 池化1 - 卷积2 - 池化2 - 卷积3 - 卷积4 - 卷积5 - 全连接1 - 全连接2 - 输出层
+**卷积1 - 池化1 -  
+卷积2 - 池化2 -  
+卷积3 - 卷积4 - 卷积5 -  
+ 全连接1 - 全连接2 - 输出层**
 
 其中**从“卷积1”到“全连接2”都是分成两个GPU分别运行的**，除了“卷积3”和两次全连接处理数据都只和**同一个GPU**的前一层核映射相连接。
 
@@ -110,9 +117,14 @@ def AlexNet(input_shape, output_shape):
 
 ### VGGNet模型介绍
 
-VGGNet来自论文[Very Deep Convolutional Networks for Large Scale Image Recognition](https://arxiv.org/pdf/1409.1556.pdf%20http://arxiv.org/abs/1409.1556)。论文阐述了6种VGG模型，VGG16是其中一种16层（没把池化算上）的VGG模型，这里以此为例。如上图所示，它的结构也很简单：
+VGGNet来自论文[Very Deep Convolutional Networks for Large Scale Image Recognition](https://arxiv.org/pdf/1409.1556.pdf%20http://arxiv.org/abs/1409.1556)。论文阐述了6种VGG模型，VGG16是其中一种16层（没把池化算上）的VGG模型，这里以此为例。如上图所示，它的结构就是简单的卷积叠加：
 
-卷积1 - 卷积2 - 池化1 - 卷积3 - 卷积4 - 池化2 - 卷积5 - 卷积6 - 卷积7 - 池化3 - 卷积8 - 卷积9 - 卷积10 - 池化4 - 卷积11 - 卷积12 - 卷积13 - 池化5 - 全连接1 - 全连接2 - 输出层
+**卷积 1 - 卷积 2 - 池化 1 -  
+卷积 3 - 卷积 4 - 池化 2 -  
+卷积 5 - 卷积 6 - 卷积 7 - 池化 3 -  
+卷积 8 - 卷积 9 - 卷积10 - 池化 4 -  
+卷积11 - 卷积12 - 卷积13 - 池化 5 -  
+全连接 1 - 全连接 2 - 输出层**
 
 输出层为Softmax，池化采用MaxPool，激活函数采用Relu。
 
@@ -192,7 +204,12 @@ GoogLeNet，最早版本来自[Going deeper with convolutions](https://www.cv-fo
 
 这个相似结构被称作**Inception**。这样一来就可以将GoogLetNet的结构简洁地表示成：
 
-卷积1 - 池化1 - LRN1 - 卷积2 - 卷积3 - LRN2 - 池化2 - Inception1 - Inception2 - 池化3 - Inception3 - Inception4 - Inception5 - Inception6 - Inception7 - 池化4 - Inception8 - Inception9 - 池化5 - 全连接 - 输出层
+**卷积1 - 池化1 - LRN1 -  
+卷积2 - 卷积3 - LRN2 - 池化2 -  
+Inception1 - Inception2 - 池化3 -  
+Inception3 - Inception4 - Inception5 - Inception6 - Inception7 - 池化4 -  
+Inception8 - Inception9 - 池化5 -  
+全连接 - 输出层**
 
 其中**除了“池化5”为AveragePool**外，其他池化均为MaxPool。输出层为Softmax，激活函数采用Relu。
 
@@ -298,7 +315,12 @@ ResNet来自论文[Deep Residual Learning for Image Recognition](http://openacce
 
 每个Block在**两层卷积之后的结果f(x)与Block的输入x相加合并了**。ResNet34所有Block中卷积核的大小都是3×3的，卷积核数量不同的Block结构组成了ResNet34：
 
-卷积 - MaxPool池化 - Block(64)_1 - Block(64)_2 - Block(64)_3 - Block(128)_1 - Block(128)_2 - Block(128)_3 - Block(128)_4 - Block(256)_1 - Block(256)_2 - Block(256)_3 - Block(256)_4 - Block(256)_5 - Block(256)_6 - Block(512)_1 - Block(512)_2 - Block(512)_3 - AvgPool池化 - 输出层
+**卷积 - MaxPool池化 -  
+Block(64)_1 - Block(64)_2 - Block(64)_3 -  
+Block(128)_1 - Block(128)_2 - Block(128)_3 - Block(128)_4 -  
+Block(256)_1 - Block(256)_2 - Block(256)_3 - Block(256)_4 - Block(256)_5 - Block(256)_6 -  
+Block(512)_1 - Block(512)_2 - Block(512)_3 -  
+AvgPool池化 - 输出层**
 
 Block中与输入x的合并要求卷积的结果f(x)和输入x的**维数一致**，不然就没法相加。但其中Block(64)_1、Block(128)_1、Block(256)_1、Block(512)_1的f(x)和x的**维数不一致**（即ResNet图中的虚线），论文中提供了三种解决方案：
 
