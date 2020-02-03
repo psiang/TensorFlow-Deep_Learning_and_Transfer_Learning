@@ -22,9 +22,9 @@ TensorFlow2.0中已经内置了keras，keras可以方便地将模型构建出来
 
 LeNet来自论文[Gradient-Based Learning Applied to Document Recognition](http://www.dengfanxin.cn/wp-content/uploads/2016/03/1998Lecun.pdf)。如上图所示，它的结构比较简单：
 
-卷积1 - 池化1 -  
+**卷积1 - 池化1 -  
 卷积2 - 池化2 -  
-全连接1（卷积） - 全连接2 - 输出层
+全连接1（卷积） - 全连接2 - 输出层**
 
 论文中使用的是tanh激活函数，输出层论文采用的是Guassian Connection。另外根据论文**全连接1应该做卷积操作Conv而不是传统意义上的全连接Dense**。
 
