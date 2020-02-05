@@ -5,9 +5,9 @@ from rsidea.preprocess import read_data, read_label, split_data
 from rsidea.util.draw import *
 from rsidea.util.history import *
 
-save = False
+save = True
 
-"""googlenet demo"""
+"""resnet34 demo"""
 # 读取数据
 x, y = read_data.read_SIRI_WHU()
 # 分割数据
@@ -20,14 +20,14 @@ model.compile(optimizer='adam',
               loss='sparse_categorical_crossentropy',
               metrics=['accuracy'])
 # 填入数据进行训练并保存模型
-history = model.fit(x_train, y_train, epochs=5,
+history = model.fit(x_train, y_train, epochs=50, batch_size=192,
                     validation_data=(x_test, y_test))
 history = history.history
 # 模型保存
 if save:
-    model.save(".\\model_data\\models\\googlenet_SIRI_WHU.h5")
-    model.save_weights(".\\model_data\\weight\\googlenet_SIRI_WHU.h5")
-    save_history(history, ".\\model_data\\history\\googlenet_SIRI_WHU.json")
+    model.save(".\\model_data\\model\\resnet34_SIRI_WHU.h5")
+    model.save_weights(".\\model_data\\weight\\resnet34_SIRI_WHU.h5")
+    save_history(history, ".\\model_data\\history\\resnet34_SIRI_WHU.json")
     print("Saved!")
 # # 模型评测
 # models.evaluate(x_test, y_test, verbose=2)
