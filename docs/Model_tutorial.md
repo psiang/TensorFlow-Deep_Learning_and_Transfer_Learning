@@ -20,7 +20,7 @@ TensorFlow2.0中已经内置了keras，keras可以方便地将模型构建出来
 
 ### LeNet模型介绍
 
-LeNet来自论文[Gradient-Based Learning Applied to Document Recognition](http://www.dengfanxin.cn/wp-content/uploads/2016/03/1998Lecun.pdf)。如上图所示，它的结构比较简单：
+LeNet来自论文[*Gradient-Based Learning Applied to Document Recognition*](http://www.dengfanxin.cn/wp-content/uploads/2016/03/1998Lecun.pdf)。如上图所示，它的结构比较简单：
 
 **卷积1 - 池化1 -  
 卷积2 - 池化2 -  
@@ -65,7 +65,7 @@ def LeNet(input_shape, output_shape):
 
 ### AlexNet模型介绍
 
-AlexNet来自论文[ImageNet Classification with Deep Convolutional Neural Networks](http://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf)。如上图所示，大致上它分了八层，但是它分成了**两个GPU**来构建，这两个部分是并行运行的，最后在输出层汇总：
+AlexNet来自论文[*ImageNet Classification with Deep Convolutional Neural Networks*](http://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf)。如上图所示，大致上它分了八层，但是它分成了**两个GPU**来构建，这两个部分是并行运行的，最后在输出层汇总：
 
 **卷积1 - 池化1 -  
 卷积2 - 池化2 -  
@@ -117,7 +117,7 @@ def AlexNet(input_shape, output_shape):
 
 ### VGGNet模型介绍
 
-VGGNet来自论文[Very Deep Convolutional Networks for Large Scale Image Recognition](https://arxiv.org/pdf/1409.1556.pdf%20http://arxiv.org/abs/1409.1556)。论文阐述了6种VGG模型，VGG16是其中一种16层（没把池化算上）的VGG模型，这里以此为例。如上图所示，它的结构就是简单的卷积叠加：
+VGGNet来自论文[*Very Deep Convolutional Networks for Large Scale Image Recognition*](https://arxiv.org/pdf/1409.1556.pdf%20http://arxiv.org/abs/1409.1556)。论文阐述了6种VGG模型，VGG16是其中一种16层（没把池化算上）的VGG模型，这里以此为例。如上图所示，它的结构就是简单的卷积叠加：
 
 **卷积 1 - 卷积 2 - 池化 1 -  
 卷积 3 - 卷积 4 - 池化 2 -  
@@ -198,7 +198,7 @@ def VGG16(input_shape, output_shape):
 
 ### GoogLeNet模型介绍
 
-GoogLeNet，最早版本来自[Going deeper with convolutions](https://www.cv-foundation.org/openaccess/content_cvpr_2015/papers/Szegedy_Going_Deeper_With_2015_CVPR_paper.pdf)。这个模型在上图乍一看流程挺复杂，但是它其实是由**多个相似结构**组成，相似结构如下图所示：
+GoogLeNet，最早版本来自[*Going deeper with convolutions*](https://www.cv-foundation.org/openaccess/content_cvpr_2015/papers/Szegedy_Going_Deeper_With_2015_CVPR_paper.pdf)。这个模型在上图乍一看流程挺复杂，但是它其实是由**多个相似结构**组成，相似结构如下图所示：
 
 ![Inception](https://github.com/psiang/Scene_Classification/blob/master/docs/pics/Inception.png)
 
@@ -225,7 +225,7 @@ Inception8 - Inception9 - 池化5 -
 
 从AlexNet开始就介绍了一种对数据归一化的优化方式LRN *(Local Response Normalization)* ，但是效果似乎没有BN *(Batch Normalization)* 好，所以**项目实现时采用BN而不再使用LRN**。
 
-BN提出自论文[Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift](https://arxiv.org/pdf/1502.03167.pdf%20http://arxiv.org/abs/1502.03167)，论文详细阐述了为什么要归一化以及归一化的作用，此处不作讨论。
+BN提出自论文[*Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift*](https://arxiv.org/pdf/1502.03167.pdf%20http://arxiv.org/abs/1502.03167)，论文详细阐述了为什么要归一化以及归一化的作用，此处不作讨论。
 
 BN在应用时应该放在**每个卷积Conv之后**，激活函数Relu之前（也有些资料认为应放在激活函数之后），带BN层的卷积实现如下：
 
@@ -309,7 +309,7 @@ def GoogLeNet(input_shape, output_shape):
 
 ### ResNet模型介绍
 
-ResNet来自论文[Deep Residual Learning for Image Recognition](http://openaccess.thecvf.com/content_cvpr_2016/papers/He_Deep_Residual_Learning_CVPR_2016_paper.pdf)。论文提出了5种ResNet，在这里以其中34层的模型ResNet34为例进行介绍。ResNet34的结构如上图所示，虽然层数很多，但是都由同一个**Block形式叠加而成**的。Block的结构如下：
+ResNet来自论文[*Deep Residual Learning for Image Recognition*](http://openaccess.thecvf.com/content_cvpr_2016/papers/He_Deep_Residual_Learning_CVPR_2016_paper.pdf)。论文提出了5种ResNet，在这里以其中34层的模型ResNet34为例进行介绍。ResNet34的结构如上图所示，虽然层数很多，但是都由同一个**Block形式叠加而成**的。Block的结构如下：
 
 ![Block](https://github.com/psiang/Scene_Classification/blob/master/docs/pics/Block.png)
 
