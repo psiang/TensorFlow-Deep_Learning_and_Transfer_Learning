@@ -108,12 +108,10 @@ DDC如上图所示在[AlexNet](https://github.com/psiang/Scene_Classification/bl
 
 总损失的计算公式为：
 
-![aa](http://latex.codecogs.com/gif.latex?a+c=b)
 ![$$l=l_c(D_s, y_s)+\lambda MMD^2(D_s,D_t)$$](http://latex.codecogs.com/gif.latex?l=l_c(D_s,y_s)+\lambda%20MMD^2(D_s,D_t))
 
-$$l=l_c(D_s, y_s)+\lambda MMD^2(D_s,D_t)$$
-
-其中$l_c(D_s, y_s)$为预测值$D_s$和真实标签$y_s$之间的损失，这和之前在[使用教程](https://github.com/psiang/Scene_Classification/blob/master/docs/Use_tutorial.md#方式一构造模型并训练)中model.complie中的loss参数的含义是一致的；$MMD$是域损失中使用最广泛的一种损失函数，在适应层计算出来。最大均值差异MMD(Maximum Mean Discrepancy)**衡量了两个数据分布的距离**，我们把这个域损失加入损失函数就是为了**缩小数据分布的差距**。
+其中***l_c***为预测值***D_s***和真实标签***y_s***之间的损失，这和之前在[使用教程](https://github.com/psiang/Scene_Classification/blob/master/docs/Use_tutorial.md#方式一构造模型并训练)中model.complie中的loss参数的含义是一致的；MMD
+是域损失中使用最广泛的一种损失函数，在适应层计算出来。最大均值差异MMD(Maximum Mean Discrepancy)**衡量了两个数据分布的距离**，我们把这个域损失加入损失函数就是为了**缩小数据分布的差距**。
 
 ### DDC实现
 
@@ -128,13 +126,16 @@ $$l=l_c(D_s, y_s)+\lambda MMD^2(D_s,D_t)$$
 #### MMD的实现
 
 MMD的推导此处不详细叙述, 此处只提供计算公式，可以去看王晋东的手册，他似乎还提供了计算量更小的方法。另外MMD实现看不懂的话**可以当作黑箱先暂时跳过**。
-$$MMD(X,Y)=||\frac{1}{n^2}\sum_i^n\sum_{i'}^n k(x_i,x_{i'})-\frac{2}{nm}\sum_i^n\sum_j^m k(x_i,y_j)+\frac{1}{m^2}\sum_j^n\sum_{j'}^n k(y_j,y_{j'})||$$
+
+![$$MMD(X,Y)=||\frac{1}{n^2}\sum_i^n\sum_{i'}^n k(x_i,x_{i'})-\frac{2}{nm}\sum_i^n\sum_j^m k(x_i,y_j)+\frac{1}{m^2}\sum_j^n\sum_{j'}^n k(y_j,y_{j'})||$$](http://latex.codecogs.com/gif.latex?MMD(X,Y)=||\\frac{1}{n^2}\\sum_i^n\\sum_{i%27}^n%20k(x_i,x_{i%27})-\\frac{2}{nm}\\sum_i^n\\sum_j^m%20k(x_i,y_j)+\\frac{1}{m^2}\\sum_j^n\\sum_{j%27}^n%20k(y_j,y_{j%27})||)
+
 上式中，核函数$k$为我们在概率论上众所周知的高斯函数：
-$$k(x,y)=e^{\frac{-||x-y||^2}{2\sigma^2}}$$
 
-实现的时候把和式部分用矩阵来表示了，以其中一个为例，$k$为元素（$x_i$或$y_j$）大小，输入是$n\times k$维的$X$和$m\times k$维的$Y$，求出$n \times m$的核矩阵$K_{x,y}$，核矩阵中每一个元素就是$k(x_i,y_j)$，对核矩阵求均值Mean就可以算出$\frac{1}{nm}\sum_i^n\sum_j^m k(x_i,y_j)$。
+![$$k(x,y)=e^{\frac{-||x-y||^2}{2\sigma^2}}$$](http://latex.codecogs.com/gif.latex?k(x,y)=e^{\\frac{-||x-y||^2}{2\\sigma^2}})
 
-实现核矩阵的时候用了[数组广播特性](http://cs231n.github.io/python-numpy-tutorial/#numpy-broadcasting)，在第一个向量$X$中间扩展1维变成$n\times 1 \times k$维再相减，可使得两个向量$X$和$Y$中每个元素两两都做一次相减而不用写循环。这样得到一个$n\times m \times k$的矩阵，平方后把最后一维相加就可得到$n \times m$维的矩阵了，之后再做处理得到核矩阵$K_{x,y}$。大家可以用Numpy实验一下。另外代码把高斯函数的常数部分直接简化用beta表示。
+实现的时候把和式部分用矩阵来表示了，以上式中间项为例，***k***为元素（***x***或***y***）大小，输入是***n × k***维的***X***和***m × k***维的***Y***，求出***n × m***的核矩阵**K**，核矩阵中每一个元素就是***k(x,y)***，对核矩阵求均值Mean就可以算出上式中间那项了。
+
+实现核矩阵的时候用了[数组广播特性](http://cs231n.github.io/python-numpy-tutorial/#numpy-broadcasting)，在第一个向量***X***中间扩展1维变成***n × 1 × k***维再相减，可使得两个向量***X***和***Y***中每个元素两两都做一次相减而不用写循环。这样得到一个***n × m × k***的矩阵，平方后把最后一维相加就可得到***n × m***维的矩阵了，之后再做处理得到核矩阵***K***。大家可以用Numpy实验一下。另外代码把高斯函数的常数部分直接简化用***beta***表示。
 
 ```python
 import tensorflow as tf
@@ -170,9 +171,9 @@ model.compile(optimizer='adam',
               metrics=['accuracy'])
 ```
 
-这相当于只包括了$l_c(D_s, y_s)$的部分。为了实现新定义的总损失，我们需要自己**重新构造一个损失函数**。
+这相当于只包括了新定义损失的l_c的部分。为了实现新定义的总损失，我们需要自己**重新构造一个损失函数**。
 
-Keras允许loss的参数是一个[自定义损失函数](https://towardsdatascience.com/advanced-keras-constructing-complex-custom-losses-and-metrics-c07ca130a618)，但Keras的损失函数规定只能有两个参数y_true和y_pred——即真实值$y_s$和预测值$D_s$。现在为了将MMD的值代入计算需要额外多一个参数。我们利用[python返回函数的特性](https://www.liaoxuefeng.com/wiki/897692888725344/989705420143968)，函数中套一个函数，可以解决需要更多参数的问题。公式中的$\lambda$在论文中为0.25。
+Keras允许loss的参数是一个[自定义损失函数](https://towardsdatascience.com/advanced-keras-constructing-complex-custom-losses-and-metrics-c07ca130a618)，但Keras的损失函数规定只能有两个参数y_true和y_pred——即真实值***y_s***和预测值***D_s***。现在为了将MMD的值代入计算需要额外多一个参数。我们利用[python返回函数的特性](https://www.liaoxuefeng.com/wiki/897692888725344/989705420143968)，函数中套一个函数，可以解决需要更多参数的问题。公式中的***lambda***的值在论文中设为0.25。
 
 ```python
 from tensorflow.keras.losses import sparse_categorical_crossentropy
