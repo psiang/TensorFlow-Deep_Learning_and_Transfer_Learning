@@ -1,12 +1,12 @@
 # Scene_Classification
 
-本项目是为了便于学习场景分类而创建的。本项目中，大家可以学习使用TensorFlow2.0搭建CNN模型和深度迁移学习方法，同时自己动手进行训练。如果觉得训练需要花费较多时间，也可以使用预训练的模型直接进行测验。
+本项目是为了便于学习场景分类而创建的。本项目中，大家可以学习使用TensorFlow2.0搭建**CNN模型**和**深度网络迁移学习**方法，同时自己动手进行训练。如果觉得训练需要花费较多时间，也可以使用预训练的模型直接进行测验。
 
 项目主要教程内容有:
 
 1. [项目的使用教程](https://github.com/psiang/Scene_Classification/blob/master/docs/Use_tutorial.md)
 2. [各种CNN模型的搭建](https://github.com/psiang/Scene_Classification/blob/master/docs/Model_tutorial.md)
-3. [深度迁移学习搭建教程](https://github.com/psiang/Scene_Classification/blob/master/docs/TL_tutorial.md)
+3. [深度网络迁移学习搭建教程](https://github.com/psiang/Scene_Classification/blob/master/docs/TL_tutorial.md)
 
 TensorFlow的详细文档可以访问官方网站<https://www.tensorflow.org/>。
 
@@ -19,7 +19,7 @@ README文档主要用于介绍项目基本情况、安装及使用环境配置�
 - [数据来源](#数据来源)
 - [项目使用教程](#项目使用教程)
 - [模型搭建教程](#模型搭建教程)
-- [深度迁移学习教程](#深度迁移学习教程)
+- [深度网络迁移学习教程](#深度网络迁移学习教程)
 
 ## 项目文件结构
 
@@ -89,8 +89,8 @@ README文档主要用于介绍项目基本情况、安装及使用环境配置�
 
 具体请参见文档：<https://github.com/psiang/Scene_Classification/blob/master/docs/Model_tutorial.md>
 
-## 深度迁移学习教程
+## 深度网络迁移学习教程
 
-深度迁移学习教程介绍了几种深度迁移学习的方式并提供了TensorFlow的实现代码。
+深度迁移学习教程介绍了几种深度网络迁移学习的方式并提供了TensorFlow的实现代码。
 
 具体请参见文档：<https://github.com/psiang/Scene_Classification/blob/master/docs/TL_tutorial.md>
