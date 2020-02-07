@@ -107,7 +107,9 @@ DDC出自论文[*Deep Domain Confusion: Maximizing for Domain Invariance*](https
 DDC如上图所示在[AlexNet](https://github.com/psiang/Scene_Classification/blob/master/docs/Use_tutorial.md#AlexNet)的8层网络基础上，在第7层全连接层之后新加了一个**域适应层**，并**固定前7层的权值**。DDC的输入有两个——源数据和目标数据，源数据有标签而目标数据没有。源数据和目标数据都在**同一个AlexNet上**运行至适应层后，利用源和目的数据在适应层的输出计算**域损失**(*domain loss*)，然后源数据继续跑至分类器层得到预测值，与源数据的标签比较，计算总损失并更新网络。
 
 总损失的计算公式为：
-$$l=l_c(D_s, y_s)+\lambda MMD^2(D_s, D_t)$$
+
+![$$l=l_c(D_s, y_s)+\lambda MMD^2(D_s, D_t)$$](http://latex.codecogs.com/gif.latex?$$l=l_c(D_s, y_s)+\\lambda MMD^2(D_s, D_t)$$)
+
 其中$l_c(D_s, y_s)$为预测值$D_s$和真实标签$y_s$之间的损失，这和之前在[使用教程](https://github.com/psiang/Scene_Classification/blob/master/docs/Use_tutorial.md#方式一构造模型并训练)中model.complie中的loss参数的含义是一致的；$MMD$是域损失中使用最广泛的一种损失函数，在适应层计算出来。最大均值差异MMD(Maximum Mean Discrepancy)**衡量了两个数据分布的距离**，我们把这个域损失加入损失函数就是为了**缩小数据分布的差距**。
 
 ### DDC实现
