@@ -108,7 +108,9 @@ DDC如上图所示在[AlexNet](https://github.com/psiang/Scene_Classification/bl
 
 总损失的计算公式为：
 
-![$$l=l_c(D_s, y_s)+\lambda MMD^2(D_s, D_t)$$](http://latex.codecogs.com/gif.latex?l=l_c(D_s, y_s)+\\lambda MMD^2(D_s, D_t))
+![aa](http://latex.codecogs.com/gif.latex?a+c=b)
+
+$$l=l_c(D_s, y_s)+\lambda MMD^2(D_s, D_t)$$
 
 其中$l_c(D_s, y_s)$为预测值$D_s$和真实标签$y_s$之间的损失，这和之前在[使用教程](https://github.com/psiang/Scene_Classification/blob/master/docs/Use_tutorial.md#方式一构造模型并训练)中model.complie中的loss参数的含义是一致的；$MMD$是域损失中使用最广泛的一种损失函数，在适应层计算出来。最大均值差异MMD(Maximum Mean Discrepancy)**衡量了两个数据分布的距离**，我们把这个域损失加入损失函数就是为了**缩小数据分布的差距**。
 
