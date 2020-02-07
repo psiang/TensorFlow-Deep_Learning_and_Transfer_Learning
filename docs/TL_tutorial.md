@@ -110,8 +110,7 @@ DDC如上图所示在[AlexNet](https://github.com/psiang/Scene_Classification/bl
 
 ![$$l=l_c(D_s, y_s)+\lambda MMD^2(D_s,D_t)$$](http://latex.codecogs.com/gif.latex?l=l_c(D_s,y_s)+\lambda%20MMD^2(D_s,D_t))
 
-其中***l_c***为预测值***D_s***和真实标签***y_s***之间的损失，这和之前在[使用教程](https://github.com/psiang/Scene_Classification/blob/master/docs/Use_tutorial.md#方式一构造模型并训练)中model.complie中的loss参数的含义是一致的；MMD
-是域损失中使用最广泛的一种损失函数，在适应层计算出来。最大均值差异MMD(Maximum Mean Discrepancy)**衡量了两个数据分布的距离**，我们把这个域损失加入损失函数就是为了**缩小数据分布的差距**。
+其中***l_c***为预测值***D_s***和真实标签***y_s***之间的损失，这和之前在[使用教程](https://github.com/psiang/Scene_Classification/blob/master/docs/Use_tutorial.md#方式一构造模型并训练)中model.complie中的loss参数的含义是一致的；***MMD***是域损失中使用最广泛的一种损失函数，在适应层计算出来。最大均值差异MMD(Maximum Mean Discrepancy)**衡量了两个数据分布的距离**，我们把这个域损失加入损失函数就是为了**缩小数据分布的差距**。
 
 ### DDC实现
 
@@ -129,7 +128,7 @@ MMD的推导此处不详细叙述, 此处只提供计算公式，可以去看王
 
 ![$$MMD(X,Y)=||\frac{1}{n^2}\sum_i^n\sum_{i'}^n k(x_i,x_{i'})-\frac{2}{nm}\sum_i^n\sum_j^m k(x_i,y_j)+\frac{1}{m^2}\sum_j^n\sum_{j'}^n k(y_j,y_{j'})||$$](http://latex.codecogs.com/gif.latex?MMD(X,Y)=||\\frac{1}{n^2}\\sum_i^n\\sum_{i%27}^n%20k(x_i,x_{i%27})-\\frac{2}{nm}\\sum_i^n\\sum_j^m%20k(x_i,y_j)+\\frac{1}{m^2}\\sum_j^n\\sum_{j%27}^n%20k(y_j,y_{j%27})||)
 
-上式中，核函数$k$为我们在概率论上众所周知的高斯函数：
+上式中，核函数***k***为我们在概率论上众所周知的高斯函数：
 
 ![$$k(x,y)=e^{\frac{-||x-y||^2}{2\sigma^2}}$$](http://latex.codecogs.com/gif.latex?k(x,y)=e^{\\frac{-||x-y||^2}{2\\sigma^2}})
 
