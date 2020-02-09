@@ -186,7 +186,7 @@ def loss_ddc(mmd):
 
 #### DDC模型的实现
 
-解决多输入问题。需要建立两个输入层。由于源数据和目的数据要在同一个AlexNet上跑，所以这里要用到keras的[权值共享网络](https://keras.io/zh/getting-started/functional-api-guide/)。具体操作就是先构建一个网络，**将其用Model只实例化一次**，对实例重复使用就相当于在同一个网络上跑。
+解决多输入问题。需要建立两个输入层。由于源数据和目的数据要在同一个AlexNet上跑，所以这里要用到keras的[权值共享网络](https://keras.io/zh/getting-started/functional-api-guide/)。具体操作就是先构建一个网络，**将其用Model只实例化一次**，对实例重复使用就相当于在同一个网络上跑。此外**只用在训练更新网络时跑目的数据**，测试时只需要得到预测值所以不用跑了，这样可以节约测试时间，用backend中的learning_phase可判断是否处于训练阶段。
 
 解决适应层问题。需要把AlexNet的第七层的输出，接在一个新的全连接层上，这个新的全连接层就是适应层。**使用get_layer函数**可得到模型中某一层。适应层的维数在论文中定位256。
 
@@ -195,6 +195,7 @@ def loss_ddc(mmd):
 ```python
 from tensorflow.keras.layers import Dense, Input
 from tensorflow.keras.models import Model
+import tensorflow.keras.backend as K
 
 from rsidea.models import alexnet
 from rsidea.util.losses import loss_mmd
@@ -221,21 +222,24 @@ def DDC(input_shape, output_shape):
     # 两个输入分别为源数据和目的数据
     inputs_1 = Input(shape=input_shape)
     inputs_2 = Input(shape=input_shape)
-    # 两个输入在同一个AlexNet上跑
+    # 在AlexNet上跑源数据
     tensor_1 = model_alex(inputs_1)
-    tensor_2 = model_alex(inputs_2)
-    # 计算mmd
-    mmd = loss_mmd(tensor_1, tensor_2)
+    # 在训练的时候才在AlexNet上跑目的数据
+    mmd = 0
+    if K.learning_phase() == 1:
+        # 在AlexNet上跑目的数据
+        tensor_2 = model_alex(inputs_2)
+        # 计算mmd
+        mmd = loss_mmd(tensor_1, tensor_2)
     # 源数据进入分类器
     tensor = Dense(output_shape, activation='softmax')(tensor_1)
-    # 构建双输入模型单输出模型
     model = Model(inputs=[inputs_1, inputs_2], outputs=tensor, name='ddc')
     return model, mmd
 ```
 
 #### DDC最终实现
 
-模型都建立好了，其他部分就简单了，和之前的模型没有太大区别。需要注意两点，一是模型构建返回了mmd，二是配置模型的时候损失函数要**改成DDC的损失函数**，并代入mmd。
+模型都建立好了，其他部分就简单了，和之前的模型没有太大区别。需要注意三点：一是模型构建返回了mmd；二是配置模型的时候损失函数要**改成DDC的损失函数**，并代入mmd；三是有模型两个输入，训练时应代入源和目的数据，模型评估和预测的时候可以两个输入都是目的数据。
 
 TIPS：由于本项目没有找到合适的预训练AlexNet，所以并没有实际跑DDC。如果找到了合适的，在数据处理时**应使得源数据和目的数据的大小和数目都相同**。
 
@@ -257,4 +261,6 @@ model.compile(optimizer='adam',
 # 填入数据进行训练
 history = model.fit([source, target], source_label, epochs=5)
 history = history.history
+# 模型预测，输入都用目的数据
+prediction = model.predict([target, target])
 ```

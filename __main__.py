@@ -22,9 +22,11 @@ model.compile(optimizer='adam',
               loss=loss_ddc(mmd),
               metrics=['accuracy'],
               experimental_run_tf_function=False)
-# 填入数据进行训练
-history = model.fit([x_train, x_test], y_train, epochs=5)
-history = history.history
+# # 模型评测
+# model.evaluate(x_test, y_test, verbose=2)
+# # 填入数据进行训练
+# history = model.fit([x_train, x_test], y_train, epochs=5)
+# history = history.history
 # # 模型保存
 # if save:
 #     model.save(".\\model_data\\model\\ddc_SIRI_WHU.h5")

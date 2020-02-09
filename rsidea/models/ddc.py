@@ -1,5 +1,6 @@
 from tensorflow.keras.layers import Dense, Input
 from tensorflow.keras.models import Model
+import tensorflow.keras.backend as K
 
 from rsidea.models import alexnet
 from rsidea.util.losses import loss_mmd
@@ -26,11 +27,15 @@ def DDC(input_shape, output_shape):
     # 两个输入分别为源数据和目的数据
     inputs_1 = Input(shape=input_shape)
     inputs_2 = Input(shape=input_shape)
-    # 两个输入在同一个AlexNet上跑
+    # 在AlexNet上跑源数据
     tensor_1 = model_alex(inputs_1)
-    tensor_2 = model_alex(inputs_2)
-    # 计算mmd
-    mmd = loss_mmd(tensor_1, tensor_2)
+    # 在训练的时候才在AlexNet上跑目的数据
+    mmd = 0
+    if K.learning_phase() == 1:
+        # 在AlexNet上跑目的数据
+        tensor_2 = model_alex(inputs_2)
+        # 计算mmd
+        mmd = loss_mmd(tensor_1, tensor_2)
     # 源数据进入分类器
     tensor = Dense(output_shape, activation='softmax')(tensor_1)
     model = Model(inputs=[inputs_1, inputs_2], outputs=tensor, name='ddc')
