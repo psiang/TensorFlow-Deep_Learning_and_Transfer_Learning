@@ -290,7 +290,7 @@ DANN的结构如上图所示，被分成了三大块：**特征提取器(*featur
 
 ### DANN实现
 
-实现以LeNet为基础，加上了GRL和判别器。在论文实现的时候，**每一批的训练源数据和目的数据各占一半**，并且还要给源和目的数据加上判别标签，所以还需要对数据进行预处理。论文的模型还设置了**动态学习率**。下面将先介绍GRL和模型的实现，然后介绍数据预处理和动态学习率的实现，最后介绍最终的模型使用实现。
+论文提供了三种架构。项目采用了以LeNet为基础，加上了GRL和判别器的实现。在论文实现的时候，**每一批的训练源数据和目的数据各占一半**，并且还要给源和目的数据加上判别标签，所以还需要对数据进行预处理。论文的模型还设置了**动态学习率**。下面将先介绍GRL和模型的实现，然后介绍数据预处理和动态学习率的实现，最后介绍最终的模型使用实现。
 
 - [梯度反向层GRL的实现](#梯度反向层GRL的实现)
 - [DANN模型实现](#DANN模型实现)
@@ -527,13 +527,13 @@ from rsidea.preprocess import read_data, read_label, split_data
 from rsidea.util.callbacks import lr_dann
 
 BATCH_SIZE = 32
-EPOCH = 10
+EPOCH = 100
 
 '''dann demo'''
 # 读取数据
 x_source, y_source, x_target = ...
 # 数据预处理
-images, truths, domains = dann.preprocess_data(x_source[:300], y_source[:300], x_target[:300], batch_size=BATCH_SIZE)
+images, truths, domains = dann.preprocess_data(x_source, y_source, x_target, batch_size=BATCH_SIZE)
 # 获取原训练模型
 model = dann.DANN(input_shape=x_source[0].shape, output_shape=12, batch_size=BATCH_SIZE)
 model.summary()
