@@ -117,6 +117,7 @@ venv.bak/
 /site
 /data/*
 !/data/demo.jpg
+!/data/Google dataset of SIRI-WHU_earth_im_tiff/12class_tif/*
 /model_data/history/*
 /model_data/model/*
 /model_data/weight/*
