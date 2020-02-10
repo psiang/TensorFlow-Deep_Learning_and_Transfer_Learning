@@ -1,1 +1,1 @@
-__all__ = ["lenet", "alexnet", "vgg16", "googlenet", "resnet34", "inception_v3", "ddc"]
+__all__ = ["lenet", "alexnet", "vgg16", "googlenet", "resnet34", "inception_v3", "ddc", "dann"]

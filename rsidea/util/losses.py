@@ -3,10 +3,19 @@ from tensorflow.keras import backend as K
 from tensorflow.keras.losses import sparse_categorical_crossentropy
 
 
+# dann损失
+def loss_dann():
+    def loss(y_true, y_pred):
+        return sparse_categorical_crossentropy(y_true, y_pred) * 0.31
+
+    return loss
+
+
 # ddc损失
 def loss_ddc(mmd):
     def loss(y_true, y_pred):
         return sparse_categorical_crossentropy(y_true, y_pred) + 0.25 * mmd * mmd
+
     return loss
 
 

@@ -1,11 +1,11 @@
 # Scene_Classification
 
-本项目是为了便于学习场景分类而创建的。本项目中，大家可以学习使用TensorFlow2.0搭建**CNN模型**和**深度网络迁移学习**方法，同时自己动手进行训练。如果觉得训练需要花费较多时间，也可以使用预训练的模型直接进行测验。
+本项目是为了便于学习场景分类而创建的，提供了三篇关于深度学习和深度迁移学习的教程以及相关模型的TensorFlow2.0代码实现。介绍的CNN模型有LeNet、AlexNet、VGGNet、GoogLeNet和ResNet；介绍的深度迁移学习模型有Finetune、自适应模型DDC、对抗网络DANN。
 
 项目主要教程内容有:
 
 1. [项目的使用教程](https://github.com/psiang/Scene_Classification/blob/master/docs/Use_tutorial.md)
-2. [各种CNN模型的搭建](https://github.com/psiang/Scene_Classification/blob/master/docs/Model_tutorial.md)
+2. [各种CNN模型的搭建教程](https://github.com/psiang/Scene_Classification/blob/master/docs/Model_tutorial.md)
 3. [深度网络迁移学习搭建教程](https://github.com/psiang/Scene_Classification/blob/master/docs/TL_tutorial.md)
 
 TensorFlow的详细文档可以访问官方网站<https://www.tensorflow.org/>。

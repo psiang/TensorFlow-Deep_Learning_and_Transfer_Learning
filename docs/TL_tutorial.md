@@ -4,12 +4,13 @@
 
 本教程介绍几种深度网络迁移学习并提供TensorFlow的实现。深度网络迁移学习是迁移学习下的一个子分类，其他迁移学习的内容可以参考[王晋东的《迁移学习简明手册》](https://github.com/jindongwang/transferlearning-tutorial)。
 
-本教程先介绍最简单的深度网络迁移学习**Finetune**，再举例说明**深度网络自适应**和**深度对抗网络**如何进行迁移学习。本教程其中对训练的操作可以参考[项目使用教程](https://github.com/psiang/Scene_Classification/blob/master/docs/Use_tutorial.md)。
+本教程先介绍最简单的深度网络迁移学习**Finetune**，再以**深度网络自适应**和**深度对抗网络**的两个简单模型DDC、DANN为例子阐述如何进行迁移学习。本教程其中对训练的操作可以参考[项目使用教程](https://github.com/psiang/Scene_Classification/blob/master/docs/Use_tutorial.md)。
 
 ## 目录
 
 - [Finetune](#Finetune)
 - [DDC](#DDC)
+- [DANN](#DANN)
 
 ## Finetune
 
@@ -29,6 +30,9 @@ TIPS： 另外还有一种迁移学习的方式和Finetune类似，它把CNN当�
 ### Finetune实现
 
 先需要利用一个预训练的模型构造一个新的模型，然后冻结新模型前几层，并对后几层进行训练。
+
+- [Finetune模型构建](#Finetune模型构建)
+- [Finetune最终实现](#Finetune最终实现)
 
 #### Finetune模型构建
 
@@ -121,6 +125,11 @@ DDC如上图所示在[AlexNet](https://github.com/psiang/Scene_Classification/bl
 3. 模型加入了一个适应层并且有两个输入
 
 下面将一一介绍以上实现。
+
+- [MMD的实现](#MMD的实现)
+- [损失函数的实现](#损失函数的实现)
+- [DDC模型的实现](#DDC模型的实现)
+- [DDC最终实现](#DDC最终实现)
 
 #### MMD的实现
 
@@ -263,4 +272,282 @@ history = model.fit([source, target], source_label, epochs=5)
 history = history.history
 # 模型预测，输入都用目的数据
 prediction = model.predict([target, target])
+```
+
+## DANN
+
+![DANN](https://github.com/psiang/Scene_Classification/blob/master/docs/pics/DANN.png)
+
+### DANN介绍
+
+DANN出自论文[*Domain-Adversarial Training of Neural Networks*](https://dl.acm.org/doi/pdf/10.5555/2946645.2946704?download=true),是一种深度对抗网络的迁移方法。设定源数据为迁移前的数据，目的数据为迁移后的数据，源数据有标签而目的数据没有。
+
+DANN的结构如上图所示，被分成了三大块：**特征提取器(*feature extractor*)、预测器(*label predictor*)、判别器(*domain classifier*)**。其中特征提取器和预测器组合起来与之前的神经网络的结构没有区别——特征提取器就是卷积层、预测器是全连接层和输出层。判别器是能够区分源数据和目的数据的全连接层网络。但我们迁移学习的目的是使得特征网络不能区分源数据和目的数据，从而消除两个域之间的差距，所以**判别器在梯度下降传到特征提取器的时候应该反号**，变成“梯度上升”。这样来自预测器的梯度下降和来自判别器的“梯度上升”形成了对抗。
+
+为此论文在特征提取器和判别器之间加入了**梯度反向层GRL(*Gradient Reversal Layer*)**，GRL该层前向传播时不进行任何变化，后向传播即梯度下降时将梯度反号处理。DANN的损失函数和DDC类似，将判别器的损失作为了补充：
+
+![$$l=l_c(D_s, y_s)+\lambda l_d^2(D_s,D_t)$$](http://latex.codecogs.com/gif.latex?l=l_c(D_s,y_s)+\lambda%20l_d(D_s,D_t))
+
+### DANN实现
+
+实现以LeNet为基础，加上了GRL和判别器。在论文实现的时候，**每一批的训练源数据和目的数据各占一半**，并且还要给源和目的数据加上判别标签，所以还需要对数据进行预处理。论文的模型还设置了**动态学习率**。下面将先介绍GRL和模型的实现，然后介绍数据预处理和动态学习率的实现，最后介绍最终的模型使用实现。
+
+- [梯度反向层GRL的实现](#梯度反向层GRL的实现)
+- [DANN模型实现](#DANN模型实现)
+- [DANN预处理实现](#DANN预处理实现)
+- [动态学习率实现](#动态学习率实现)
+- [DANN最终实现](#DANN最终实现)
+
+#### 梯度反向层GRL的实现
+
+首先需要继承Layer**重构一个新的层**。call函数需要重载用于tensor的处理，其输入参数x即为来自上一层的tensor输入，其return返回的参数即为通过该层处理后给下一层的输出tensor。其他函数重载不多做介绍，参见[TensorFlow自定义层](https://www.tensorflow.org/guide/keras/custom_layers_and_models)。
+
+其次需要[自定义GRL梯度](https://stackoverflow.com/questions/52084911/how-to-create-a-custom-layer-to-get-and-manipulate-gradients-in-keras)。从之前的实践中我们知道TensorFlow是先构建出图，然后再填入数据运行的，为了修改梯度我们要修改图。如下所示使用修饰器RegisterGradient**注册一个新梯度函数**，函数中让梯度反号。然后再获取TensorFlow的图，用gradient_override_map**替换Identity的梯度**为自己新注册的梯度，Identity的作用就是返回跟输入完全相同的输出。
+
+最后梯度的名称是不能重复的，为了防止被多次调用，设置一个计数器num_calls对梯度的名称在每次调用时进行修改。
+
+```python
+import tensorflow as tf
+from tensorflow.keras.layers import Layer
+
+
+# 构建GRL
+class GradientReversal(Layer):
+    def __init__(self, **kwargs):
+        super(GradientReversal, self).__init__(**kwargs)
+        self.num_calls = 0
+
+    # 该层处理张量
+    def call(self, x, mask=None):
+        # 设置不重复的梯度名称
+        grad_name = "GradientReversal%d" % self.num_calls
+        # 注册反号的梯度
+        @tf.RegisterGradient(grad_name)
+        def _flip_gradients(op, grad):
+            return [tf.negative(grad) * 1.0]
+        # 获取当前会话的图
+        g = tf.compat.v1.get_default_graph()
+        # 替换identity的梯度为自己新定义的梯度
+        with g.gradient_override_map({'Identity': grad_name}):
+            y = tf.identity(x)
+
+        self.num_calls += 1
+
+        return y
+```
+
+#### DANN模型实现
+
+模型有特征提取器、预测器和判别器三个重要的组成部分，下面先介绍这三个部分，再说明这三个部分如何连接在一起。
+
+##### 特征提取器
+
+特征提取器按照LeNet卷积部分直接构建即可：
+
+```python
+# 特征提取器（使用LeNet）
+def __feature_extractor(input_shape):
+    inputs = Input(shape=input_shape)
+    tensor = Conv2D(filters=32, kernel_size=(5, 5), padding="same", activation="relu")(inputs)
+    tensor = MaxPooling2D(pool_size=(2, 2))(tensor)
+
+    tensor = Conv2D(filters=48, kernel_size=(5, 5), padding="same", activation="relu")(tensor)
+    tensor = MaxPooling2D(pool_size=(2, 2))(tensor)
+
+    tensor = Dropout(0.5)(tensor)
+    tensor = Flatten()(tensor)
+
+    feature_output = Dense(100, activation="relu")(tensor)
+    # 实例化提取器
+    model = Model(inputs=inputs, outputs=feature_output, name='feature_extractor')
+    return model
+```
+
+##### 预测器
+
+预测器按照LeNet全连接部分直接构建即可：
+
+```python
+# 预测器
+def __label_predictor(input_shape, output_shape):
+    inputs = Input(shape=input_shape)
+    out = Dense(128, activation="relu")(inputs)
+    out = Dropout(0.5)(out)
+    predictor_output = Dense(output_shape, activation="softmax", name="classifier_output")(out)
+    # 实例化预测器
+    model = Model(inputs=inputs, outputs=predictor_output, name='label_predictor')
+    return model
+```
+
+##### 判别器
+
+判别器开始先插入一个梯度反向层GRL，然后接一个全连接层，最后时一个输出层，注意输出的类别只有2种（即判别是源还是目的），是二分类。
+
+```python
+# 判别器
+def __domain_classifier(input_shape):
+    inputs = Input(shape=input_shape)
+    # 插入GRL
+    grl_layer = GradientReversal()
+    out = grl_layer(inputs)
+    out = Dense(128, activation="relu")(out)
+    out = Dropout(0.5)(out)
+    classifier_output = Dense(2, activation="softmax", name="discriminator_output")(out)
+    # 实例化判别器
+    model = Model(inputs=inputs, outputs=classifier_output, name='domain_classifier')
+    return model
+```
+
+##### 组成DANN模型
+
+在前面介绍到，训练的时候，每一批数据是一半源数据和一半目的数据组成，这批数据通过特征提取器后，可以直接给判别器；但是由于目的数据是没有真实标签的，所以**只能把源数据给预测器**，目的数据应丢弃。
+
+利用Lambda可以快速构建一层，下面的代码在Lambda层，先用learning_phase判断是否在训练阶段，用switch实现分支结构。如果当前是训练阶段，则将这一批的前一半（即源数据）复制拼接，即使得改批从 **源-目的** 变成 **源-源**；如果是测试阶段则不作处理。返回数据的大小和输入相比不变。
+
+TIPS：此处也可以像GRL一样继承Layer构建一个自定义层，不够没有这个简单方便。
+
+```python
+import tensorflow.keras.backend as K
+from tensorflow.keras.layers import Dense, Input, Conv2D, MaxPooling2D, Dropout, Flatten, Lambda
+from tensorflow.keras.models import Model
+
+from rsidea.util.layers import GradientReversal
+
+
+# DANN建模
+def DANN(input_shape, output_shape, batch_size=32):
+    # 输入
+    inputs = Input(shape=input_shape, name="source_input")
+    # 通过特征提取器
+    feature_extractor = __feature_extractor(input_shape=inputs[0].shape)
+    feature_output = feature_extractor(inputs)
+    # 通过判别器
+    domain_classifier = __domain_classifier(input_shape=feature_output[0].shape)
+    domain_classifier_output = domain_classifier(feature_output)
+    # 处理数据
+    source_feature = Lambda(lambda x: K.switch(K.learning_phase(),
+                                               K.concatenate([x[:int(batch_size // 2)], x[:int(batch_size // 2)]],
+                                                             axis=0),
+                                               x),
+                            output_shape=lambda x: x)(feature_output)
+    # 通过分类器
+    label_predictor = __label_predictor(input_shape=feature_output[0].shape, output_shape=output_shape)
+    label_predictor_output = label_predictor(source_feature)
+    # 实例化模型
+    model = Model(inputs=inputs, outputs=[label_predictor_output, domain_classifier_output])
+    return model
+```
+
+#### DANN预处理实现
+
+我们应将每一批数据处理成一半源数据和一半目的数据。同时按照[模型构建](#组成DANN模型)，源数据的标签也应该**每半批复制拼接成新的一批**。还应该增加域判别标签，**每批由半批0和半批1拼接而成**，表示源和目的数据输于不同的域类别。
+
+```python
+import numpy as np
+
+# 数据预处理
+def preprocess_data(x_source, y_source, x_target, batch_size=32):
+    # 位置计数，半批一处理
+    index = 0
+    # 半批
+    half_batch = int(batch_size // 2)
+    # 表示处理后的图像数据、判别标签和源数据标签
+    images = []
+    domains = []
+    truths = []
+    while x_source.shape[0] > index + half_batch:
+        # 图像数据：一半源数据和一半目的数据
+        batch_images = np.concatenate((x_source[index: index + half_batch],
+                                       x_target[index: index + half_batch]), axis=0)
+        # 判别标签：每批由半批0和半批1拼接而成
+        batch_domains = np.concatenate((np.array([0] * half_batch),
+                                        np.array([1] * half_batch)), axis=0)
+        # 源数据标签：每半批复制拼接成新的一批
+        batch_truths = np.concatenate((y_source[index: index + half_batch],
+                                       y_source[index: index + half_batch]), axis=0)
+        # 每批整合到一起
+        if index == 0:
+            images = batch_images
+            domains = batch_domains
+            truths = batch_truths
+        else:
+            images = np.concatenate((images, batch_images), axis=0)
+            domains = np.concatenate((domains, batch_domains), axis=0)
+            truths = np.concatenate((truths, batch_truths), axis=0)
+        index += half_batch
+    return images, truths, domains
+```
+
+#### 动态学习率实现
+
+论文在实现的时候使用了**动态学习率μ**和**动态预适应参数λ**，即这两个参数随着epoch的周期不断变化：
+
+![$$\mu_p=\frac{\mu_0}{(1+\alpha p)^\beta}$$](http://latex.codecogs.com/gif.latex?\\mu_p=\\frac{\\mu_0}{(1+\\alpha%20p)^\\beta})
+
+![$$\lambda_p=\frac{2}{1+\exp(-\gamma p)}-1$$](http://latex.codecogs.com/gif.latex?\lambda_p=\frac{2}{1+\exp(-\gamma%20p)}-1)
+
+其中p是随着epoch在0到1上线性变化的参数，α、β、γ、μ_0是固定参数，论文中提供了具体数值。μ就是整个模型的学习率，λ是总损失中对应着域适应的权值。
+
+本项目只实现了μ的动态变化，而固定了λ为0.31。实现μ的动态变化需要重构LearningRateScheduler中的scheduler函数，并将新的LearningRateScheduler作为callbacks在模型训练的时候传入。这个scheduler函数将在每个epoch开始的时候调用确认新的学习率。
+
+```python
+from tensorflow.keras.callbacks import LearningRateScheduler
+from tensorflow.keras import backend as K
+
+
+def lr_dann(model, epochs):
+    # 按照论文公式设置学习率
+    def scheduler(epoch):
+        u0 = 0.01
+        a = 10.0
+        b = 0.75
+        p = epoch / (epochs * 1.0)
+        lr = u0 / ((1 + a * p) ** b)
+        K.set_value(model.optimizer.lr, lr * 0.1)
+        return K.get_value(model.optimizer.lr)
+    # 形成处理学习率的Callback
+    reduce_lr = LearningRateScheduler(scheduler)
+    return reduce_lr
+```
+
+#### DANN最终实现
+
+和之前的最终实现有以下区别：
+
+1. 读取数据后进行了对批的预处理。
+2. **模型为双输出**，所以在compile的时候对每个输出都应该指定损失函数，fit的时候应该把源数据标签和判别标签代入。
+3. 模型训练的时候要将调整学习率的callbacks传入
+4. 预测应该用数据预处理前的目的数据。
+
+TIPS：DANN模型也可以导入预训练的权值再对特征提取器进行Finetune。
+
+```python
+from rsidea.models import *
+from rsidea.preprocess import read_data, read_label, split_data
+from rsidea.util.callbacks import lr_dann
+
+BATCH_SIZE = 32
+EPOCH = 10
+
+'''dann demo'''
+# 读取数据
+x_source, y_source, x_target = ...
+# 数据预处理
+images, truths, domains = dann.preprocess_data(x_source[:300], y_source[:300], x_target[:300], batch_size=BATCH_SIZE)
+# 获取原训练模型
+model = dann.DANN(input_shape=x_source[0].shape, output_shape=12, batch_size=BATCH_SIZE)
+model.summary()
+# 配置模型
+model.compile(optimizer='adam',
+              loss={'label_predictor': 'sparse_categorical_crossentropy',
+                    'domain_classifier': 'sparse_categorical_crossentropy'},
+              loss_weights={'label_predictor': 1.0,
+                            'domain_classifier': 0.31},
+              metrics=['accuracy'],
+              experimental_run_tf_function=False)
+# 填入数据进行训练
+history = model.fit(images, [truths, domains], epochs=EPOCH, batch_size=BATCH_SIZE, callbacks=[lr_dann(model, EPOCH)])
+history = history.history
+# 模型预测
+prediction = model.predict(x_target)
 ```
