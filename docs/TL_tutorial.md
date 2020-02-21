@@ -4,7 +4,7 @@
 
 本教程介绍几种深度网络迁移学习并提供TensorFlow的实现。深度网络迁移学习是迁移学习下的一个子分类，其他迁移学习的内容可以参考[王晋东的《迁移学习简明手册》](https://github.com/jindongwang/transferlearning-tutorial)。
 
-本教程先介绍最简单的深度网络迁移学习**Finetune**，再以**深度网络自适应**和**深度对抗网络**的两个简单模型DDC、DANN为例子阐述如何进行迁移学习。本教程其中对训练的操作可以参考[项目使用教程](https://github.com/psiang/Scene_Classification/blob/master/docs/Use_tutorial.md)。
+本教程先介绍最简单的深度网络迁移学习**Finetune**，再以**深度网络自适应**和**深度对抗网络**的两个简单模型DDC、DANN为例子阐述如何进行迁移学习。本教程其中对训练的操作可以参考[项目使用教程](https://github.com/psiang/TensorFlow-Deep_Learning_and_Transfer_Learning/blob/master/docs/Use_tutorial.md)。
 
 ## 目录
 
@@ -14,11 +14,11 @@
 
 ## Finetune
 
-![Finetune](https://github.com/psiang/Scene_Classification/blob/master/docs/pics/Finetune.png)
+![Finetune](https://github.com/psiang/TensorFlow-Deep_Learning_and_Transfer_Learning/blob/master/docs/pics/Finetune.png)
 
 ### Finetune介绍
 
-这是最简单的深度迁移学习方法。我们在[模型搭建教程](https://github.com/psiang/Scene_Classification/blob/master/docs/Model_tutorial.md)中已经知道了一个CNN模型是由很多层构成的。论文[*How transferable are features in deep neuralnetworks?*](http://papers.nips.cc/paper/5347-how-transferable-are-features-in-deep-neural-networks.pdf)认为神经网络的前几层提取的体征具有普适性，而越往后的层学习到的特征越具体。所以可以**保留前几个具有普适性的层不动，而重新训练调整后面几层的权值**，这就是Finetune。
+这是最简单的深度迁移学习方法。我们在[模型搭建教程](https://github.com/psiang/TensorFlow-Deep_Learning_and_Transfer_Learning/blob/master/docs/Model_tutorial.md)中已经知道了一个CNN模型是由很多层构成的。论文[*How transferable are features in deep neuralnetworks?*](http://papers.nips.cc/paper/5347-how-transferable-are-features-in-deep-neural-networks.pdf)认为神经网络的前几层提取的体征具有普适性，而越往后的层学习到的特征越具体。所以可以**保留前几个具有普适性的层不动，而重新训练调整后面几层的权值**，这就是Finetune。
 
 一般Finetune的做法有两种，两种方法大同小异：
 
@@ -36,7 +36,7 @@ TIPS： 另外还有一种迁移学习的方式和Finetune类似，它把CNN当�
 
 #### Finetune模型构建
 
-模型构建参看[模型搭建教程](https://github.com/psiang/Scene_Classification/blob/master/docs/Model_tutorial.md)。由于没有找到合适的Keras场景分类预训练模型，此处使用了Keras自带的预训练模型Inception v3，它用的是[ImageNet](http://www.image-net.org/)进行预训练的。
+模型构建参看[模型搭建教程](https://github.com/psiang/TensorFlow-Deep_Learning_and_Transfer_Learning/blob/master/docs/Model_tutorial.md)。由于没有找到合适的Keras场景分类预训练模型，此处使用了Keras自带的预训练模型Inception v3，它用的是[ImageNet](http://www.image-net.org/)进行预训练的。
 
 具体实现的时候要**将原模型的全连接层去掉，并添加上新的全连接层**。在迁移学习的实践中常常使用全局池化层Global Average Pool代替全连接层Dense，全局池化层出自论文[*Network In Network*](https://arxiv.org/pdf/1312.4400.pdf%20http://arxiv.org/abs/1312.4400)，这样效果更好且节约性能。
 
@@ -62,7 +62,7 @@ def InceptionV3(input_shape, output_shape):
 
 #### Finetune最终实现
 
-下面的代码和之前的[训练模型示例](https://github.com/psiang/Scene_Classification/blob/master/docs/Use_tutorial.md#训练模型示例)的主要区别就在于有没有**冻结操作**。Finetune需要先冻结前几层才能进行训练。
+下面的代码和之前的[训练模型示例](https://github.com/psiang/TensorFlow-Deep_Learning_and_Transfer_Learning/blob/master/docs/Use_tutorial.md#训练模型示例)的主要区别就在于有没有**冻结操作**。Finetune需要先冻结前几层才能进行训练。
 
 本项目冻结了前172层，用少量数据（训练集:测试集 = 2:8）做训练，且只跑了5个周期，耗费时长仅十多分钟（之前重头训练100个周期要十多个小时），但效果不输于之前任何一个模型，这就是迁移学习的神奇之处。
 
@@ -102,19 +102,19 @@ draw_accuracy(history)
 
 ## DDC
 
-![DDC](https://github.com/psiang/Scene_Classification/blob/master/docs/pics/DDC.png)
+![DDC](https://github.com/psiang/TensorFlow-Deep_Learning_and_Transfer_Learning/blob/master/docs/pics/DDC.png)
 
 ### DDC介绍
 
 DDC出自论文[*Deep Domain Confusion: Maximizing for Domain Invariance*](https://arxiv.org/pdf/1412.3474)，是一种深度网络自适应的迁移方法，用来解决Finetune无法处理源数据（迁移前的数据）和目标数据（迁移后的数据）分布不同的情况。
 
-DDC如上图所示在[AlexNet](https://github.com/psiang/Scene_Classification/blob/master/docs/Use_tutorial.md#AlexNet)的8层网络基础上，在第7层全连接层之后新加了一个**域适应层**，并**固定前7层的权值**。DDC的输入有两个——源数据和目标数据，源数据有标签而目标数据没有。源数据和目标数据都在**同一个AlexNet上**运行至适应层后，利用源和目的数据在适应层的输出计算**域损失**(*domain loss*)，然后源数据继续跑至分类器层得到预测值，与源数据的标签比较，计算总损失并更新网络。
+DDC如上图所示在[AlexNet](https://github.com/psiang/TensorFlow-Deep_Learning_and_Transfer_Learning/blob/master/docs/Use_tutorial.md#AlexNet)的8层网络基础上，在第7层全连接层之后新加了一个**域适应层**，并**固定前7层的权值**。DDC的输入有两个——源数据和目标数据，源数据有标签而目标数据没有。源数据和目标数据都在**同一个AlexNet上**运行至适应层后，利用源和目的数据在适应层的输出计算**域损失**(*domain loss*)，然后源数据继续跑至分类器层得到预测值，与源数据的标签比较，计算总损失并更新网络。
 
 总损失的计算公式为：
 
 ![$$l=l_c(D_s, y_s)+\lambda MMD^2(D_s,D_t)$$](http://latex.codecogs.com/gif.latex?l=l_c(D_s,y_s)+\lambda%20MMD^2(D_s,D_t))
 
-其中***l_c***为预测值***D_s***和真实标签***y_s***之间的损失，这和之前在[使用教程](https://github.com/psiang/Scene_Classification/blob/master/docs/Use_tutorial.md#方式一构造模型并训练)中model.complie中的loss参数的含义是一致的；***MMD***是域损失中使用最广泛的一种损失函数，在适应层计算出来。最大均值差异MMD(Maximum Mean Discrepancy)**衡量了两个数据分布的距离**，我们把这个域损失加入损失函数就是为了**缩小数据分布的差距**。
+其中***l_c***为预测值***D_s***和真实标签***y_s***之间的损失，这和之前在[使用教程](https://github.com/psiang/TensorFlow-Deep_Learning_and_Transfer_Learning/blob/master/docs/Use_tutorial.md#方式一构造模型并训练)中model.complie中的loss参数的含义是一致的；***MMD***是域损失中使用最广泛的一种损失函数，在适应层计算出来。最大均值差异MMD(Maximum Mean Discrepancy)**衡量了两个数据分布的距离**，我们把这个域损失加入损失函数就是为了**缩小数据分布的差距**。
 
 ### DDC实现
 
@@ -170,7 +170,7 @@ def __gaussian_kernel(x1, x2, beta=1.0):
 
 #### 损失函数的实现
 
-我们在之前[配置模型](https://github.com/psiang/Scene_Classification/blob/master/docs/Use_tutorial.md#方式一构造模型并训练)的时候使用的是如下代码，loss函数使用了keras自带的sparse categorical crossentropy：
+我们在之前[配置模型](https://github.com/psiang/TensorFlow-Deep_Learning_and_Transfer_Learning/blob/master/docs/Use_tutorial.md#方式一构造模型并训练)的时候使用的是如下代码，loss函数使用了keras自带的sparse categorical crossentropy：
 
 ```python
 # 配置模型
@@ -276,7 +276,7 @@ prediction = model.predict([target, target])
 
 ## DANN
 
-![DANN](https://github.com/psiang/Scene_Classification/blob/master/docs/pics/DANN.png)
+![DANN](https://github.com/psiang/TensorFlow-Deep_Learning_and_Transfer_Learning/blob/master/docs/pics/DANN.png)
 
 ### DANN介绍
 

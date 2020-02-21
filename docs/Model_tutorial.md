@@ -16,7 +16,7 @@ TensorFlow2.0中已经内置了keras，keras可以方便地将模型构建出来
 
 ## LeNet
 
-![LeNet](https://github.com/psiang/Scene_Classification/blob/master/docs/pics/LeNet.png)
+![LeNet](https://github.com/psiang/TensorFlow-Deep_Learning_and_Transfer_Learning/blob/master/docs/pics/LeNet.png)
 
 ### LeNet模型介绍
 
@@ -61,7 +61,7 @@ def LeNet(input_shape, output_shape):
 
 ## AlexNet
 
-![AlexNet](https://github.com/psiang/Scene_Classification/blob/master/docs/pics/AlexNet.png)
+![AlexNet](https://github.com/psiang/TensorFlow-Deep_Learning_and_Transfer_Learning/blob/master/docs/pics/AlexNet.png)
 
 ### AlexNet模型介绍
 
@@ -113,7 +113,7 @@ def AlexNet(input_shape, output_shape):
 
 ## VGGNet
 
-![VGGNet](https://github.com/psiang/Scene_Classification/blob/master/docs/pics/VGGNet.png)
+![VGGNet](https://github.com/psiang/TensorFlow-Deep_Learning_and_Transfer_Learning/blob/master/docs/pics/VGGNet.png)
 
 ### VGGNet模型介绍
 
@@ -194,13 +194,13 @@ def VGG16(input_shape, output_shape):
 
 ## GoogLeNet
 
-![GoogLeNet](https://github.com/psiang/Scene_Classification/blob/master/docs/pics/GoogLeNet.png)
+![GoogLeNet](https://github.com/psiang/TensorFlow-Deep_Learning_and_Transfer_Learning/blob/master/docs/pics/GoogLeNet.png)
 
 ### GoogLeNet模型介绍
 
 GoogLeNet，最早版本来自[*Going deeper with convolutions*](https://www.cv-foundation.org/openaccess/content_cvpr_2015/papers/Szegedy_Going_Deeper_With_2015_CVPR_paper.pdf)。这个模型在上图乍一看流程挺复杂，但是它其实是由**多个相似结构**组成，相似结构如下图所示：
 
-![Inception](https://github.com/psiang/Scene_Classification/blob/master/docs/pics/Inception.png)
+![Inception](https://github.com/psiang/TensorFlow-Deep_Learning_and_Transfer_Learning/blob/master/docs/pics/Inception.png)
 
 这个相似结构被称作**Inception**。这样一来就可以将GoogLetNet的结构简洁地表示成：
 
@@ -305,13 +305,13 @@ def GoogLeNet(input_shape, output_shape):
 
 ## ResNet
 
-![ResNet](https://github.com/psiang/Scene_Classification/blob/master/docs/pics/ResNet.png)
+![ResNet](https://github.com/psiang/TensorFlow-Deep_Learning_and_Transfer_Learning/blob/master/docs/pics/ResNet.png)
 
 ### ResNet模型介绍
 
 ResNet来自论文[*Deep Residual Learning for Image Recognition*](http://openaccess.thecvf.com/content_cvpr_2016/papers/He_Deep_Residual_Learning_CVPR_2016_paper.pdf)。论文提出了5种ResNet，在这里以其中34层的模型ResNet34为例进行介绍。ResNet34的结构如上图所示，虽然层数很多，但是都由同一个**Block形式叠加而成**的。Block的结构如下：
 
-![Block](https://github.com/psiang/Scene_Classification/blob/master/docs/pics/Block.png)
+![Block](https://github.com/psiang/TensorFlow-Deep_Learning_and_Transfer_Learning/blob/master/docs/pics/Block.png)
 
 每个Block在**两层卷积之后的结果f(x)与Block的输入x相加合并了**。ResNet34所有Block中卷积核的大小都是3×3的，卷积核数量不同的Block结构组成了ResNet34：
 

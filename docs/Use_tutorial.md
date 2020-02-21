@@ -12,7 +12,7 @@
 
 最后将提供两个使用示例代码提供参考。
 
-另外，本教程所有操作均在__main__.py完成。教程只提供项目自己的接口的具体参数介绍，关于TensorFlow的接口参数和功能可查看[官网文档](https://www.tensorflow.org/api_docs/python/tf)。而构建CNN模型的部分则转移至另一个[模型搭建教程](https://github.com/psiang/Scene_Classification/blob/master/docs/Model_tutorial.md)。
+另外，本教程所有操作均在__main__.py完成。教程只提供项目自己的接口的具体参数介绍，关于TensorFlow的接口参数和功能可查看[官网文档](https://www.tensorflow.org/api_docs/python/tf)。而构建CNN模型的部分则转移至另一个[模型搭建教程](https://github.com/psiang/TensorFlow-Deep_Learning_and_Transfer_Learning/blob/master/docs/Model_tutorial.md)。
 
 参考文献：[TensorFlow官网CNN教程](https://www.tensorflow.org/tutorials/images/cnn)。
 
@@ -68,7 +68,7 @@ x, y = read_data.read_SIRI_WHU()
 - x：Numpy类型。图像样本数据，有四维，第1维是不同的图像，第2至3维是图像的像素长宽，第4维是图像通道数。**注意学习器的数据必须是0~1之间的实数。**
 - y：Numpy类型。样本的标签，返回的是编号过的标签。**注意学习器的标签必须是数字，此处若自己写接口必须将标签转换成int类型。**
 
-TIPS：本项目只提供了对样例数据SIRI_WHU的读入接口，如果需要对其他数据进行读取则按照类似[规范代码](https://github.com/psiang/Scene_Classification/blob/master/rsidea/preprocess/read_data.py)补充接口即可。
+TIPS：本项目只提供了对样例数据SIRI_WHU的读入接口，如果需要对其他数据进行读取则按照类似[规范代码](https://github.com/psiang/TensorFlow-Deep_Learning_and_Transfer_Learning/blob/master/rsidea/preprocess/read_data.py)补充接口即可。
 
 ### 标签名称获取
 
@@ -85,7 +85,7 @@ names = read_label.read_SIRI_WHU()
 
 - names：Numpy类型。样本的数据，如果要获取原始标签的名称则通过这个接口获取，是原始字符串形式的标签。
 
-TIPS：本项目只提供了对样例数据SIRI_WHU的读入接口，如果需要对其他数据标签进行读取则按照类似[规范代码](https://github.com/psiang/Scene_Classification/blob/master/rsidea/preprocess/read_label.py)补充接口即可。
+TIPS：本项目只提供了对样例数据SIRI_WHU的读入接口，如果需要对其他数据标签进行读取则按照类似[规范代码](https://github.com/psiang/TensorFlow-Deep_Learning_and_Transfer_Learning/blob/master/rsidea/preprocess/read_label.py)补充接口即可。
 
 ## 数据的预处理
 
@@ -125,7 +125,7 @@ x_train, y_train, x_test, y_test = split_data.split(data, label)
 - 构造模型加载预训练权值
 - 直接加载预训练模型
 
-构造模型可以参考另一篇[模型搭建教程](https://github.com/psiang/Scene_Classification/blob/master/docs/Model_tutorial.md)，调用构造的接口可以获得一个Model类型的未训练模型。
+构造模型可以参考另一篇[模型搭建教程](https://github.com/psiang/TensorFlow-Deep_Learning_and_Transfer_Learning/blob/master/docs/Model_tutorial.md)，调用构造的接口可以获得一个Model类型的未训练模型。
 
 #### 方式一:构造模型并训练
 
@@ -275,7 +275,7 @@ draw_loss(history)
 
 图例：
 
-![损失折线图](https://github.com/psiang/Scene_Classification/blob/master/results/loss/lenet_SIRI_WHU.png)
+![损失折线图](https://github.com/psiang/TensorFlow-Deep_Learning_and_Transfer_Learning/blob/master/results/loss/lenet_SIRI_WHU.png)
 
 ### 准确度折线图
 
@@ -292,7 +292,7 @@ draw_accuracy(history)
 
 图例：
 
-![准确度折线图](https://github.com/psiang/Scene_Classification/blob/master/results/accuracy/lenet_SIRI_WHU.png)
+![准确度折线图](https://github.com/psiang/TensorFlow-Deep_Learning_and_Transfer_Learning/blob/master/results/accuracy/lenet_SIRI_WHU.png)
 
 ### 单张预测展示图
 
@@ -322,7 +322,7 @@ draw_predict_demo(model, x, label_name)
   
 图例：
 
-![单张预测展示图](https://github.com/psiang/Scene_Classification/blob/master/results/prediction/lenet_SIRI_WHU.png)
+![单张预测展示图](https://github.com/psiang/TensorFlow-Deep_Learning_and_Transfer_Learning/blob/master/results/prediction/lenet_SIRI_WHU.png)
 
 ## 示例代码
 
